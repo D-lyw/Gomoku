@@ -1,36 +1,38 @@
 <template>
-    <div id="home">
-      <div class="container">
-        <div>
-          <avatar></avatar>
-          <div>
-            <div>棋子数</div>
-            <div>计时器</div>
-          </div>
-          <div>悔棋等按钮区</div>
-        </div>
-        <div>
-          <canvas></canvas>
-          <div>游戏区</div>
-        </div>
-        <div>
-          <div>头像区</div>
-          <div>
-            <div>棋子数</div>
-            <div>计时器</div>
-          </div>
-          <div>聊天区</div>
-        </div>
+  <div id="home">
+    <div class="container">
+      <div class="game-left">
+        <avatar></avatar>
+        <timer></timer>
+        <chessbtns></chessbtns>
+      </div>
+      <div class="game-mid">
+        <chessboard></chessboard>
+      </div>
+      <div class="game-right">
+        <avatar></avatar>
+        <timer></timer>
+        <cheatpanel></cheatpanel>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
-  import avatar from '../../components/avatar/avatar'
+  import avatar from '../../components/avatar/avatar';
+  import chessboard from '../../components/chessboard/chessboard';
+  import chessbtns from '../../components/chessbtns/chessbtns';
+  import timer from '../../components/timer/timer';
+  import cheatpanel from '../../components/cheatpanel/cheatpanel';
+
   export default {
     name: 'home',
-    components:{
+    components: {
       avatar,
+      timer,
+      chessboard,
+      chessbtns,
+      cheatpanel,
     },
     data () {
       return {
@@ -58,6 +60,23 @@
   };
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+  #home {
+    .container {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      .game-left {
+        width: 280px;
+      }
+      .game-mid {
+        width: 600px;
+        height: 560px;
+        border: 1px solid black;
+      }
+      .game-right {
+        width: 280px;
+      }
+    }
+  }
 </style>
