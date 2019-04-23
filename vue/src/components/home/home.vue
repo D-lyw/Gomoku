@@ -31,7 +31,30 @@
     name: 'home',
     components:{
       avatar,
-    }
+    },
+    data () {
+      return {
+        userId: '',
+        coor: ''
+      }
+    },
+    mounted() {
+      this.$socket.emit('connect', userId)
+      this.$socket.on('serverClick', (ver) => {
+        console.log(ver)
+      })
+    },
+    sockets: {
+      connect () {
+        console.log('connected')
+        this.userId = this.$socket.id
+      }
+    },
+    methods: {
+      clientClick(ver) { // ver下棋的坐标
+        this.$socket.emit('某方下棋', ver)
+      }
+    },
   };
 </script>
 
