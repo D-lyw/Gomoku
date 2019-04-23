@@ -3,7 +3,12 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import VueSocketio from 'vue-socket.io'
+import socketio from 'socket.io-client'
 
+// Vue.use(new VueSocketio({
+//   connection: socketio('xx:80')
+// }))
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
