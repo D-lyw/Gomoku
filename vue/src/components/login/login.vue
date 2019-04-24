@@ -1,82 +1,98 @@
 <template>
-  <form class="login-form" @submit="doSubmit">
+  <form class="login-form">
     <h1>
-      <span>Login</span>
+      <span>{{title}}</span>
       <span class="error-msg" v-show="errorMsg">{{errorMsg}}</span>
     </h1>
     <input type="text" class="login-input" placeholder="User Name" v-model="username">
-    <input type="password" class="login-input" placeholder="password" v-model="password">
-    <button type="submit" class="login-btn">登 录</button>
+    <div class="btn-group">
+      <button type="submit" class="login-btn" @click="doSubmit">登 录</button>
+      <button class="regist-btn" @click="handleRegist">注 册</button>
+    </div>
   </form>
 </template>
 
 <script>
-import axios from 'axios'
-export default {
-  metaInfo: {
-    title: 'Login page'
-  },
-  data () {
-    return {
-      username: '',
-      password: '',
-      errorMsg: '',
-      userToken: ''
-    }
-  },
-  methods: {
-    doSubmit (e) {
-      e.preventDefault()
-      if (this.validate()) {
-        axios({
-          methods: 'post',
-          url: '',
-          data: {
-            username: this.username,
-            password: this.password
-          }
-        }).then(res => {
-          // this.userToken = res.data
-          localStorage.setItem('Authorization', this.userToken)
-          this.$router.replace('/home')
-        }).catch(error => {
-          alert('账号密码错误')
-          console.log(error)
-        })
-      }
+  import axios from 'axios';
+
+  export default {
+    metaInfo: {
+      title: 'Login page',
     },
-    validate () {
-      if (!this.username.trim()) {
-        this.errorMsg = '姓名不能为空'
-        return false
-      }
-      if (!this.password.trim()) {
-        this.errorMsg = '密码不能为空'
-        return false
-      }
-      this.errorMsg = ''
-      return true
-    }
-  }
-}
+    data () {
+      return {
+        username: '',
+        errorMsg: '',
+        userToken: '',
+        title: '登录',
+      };
+    },
+    methods: {
+      doSubmit (e) {
+        e.preventDefault();
+        if (this.validate()) {
+          axios({
+            methods: 'post',
+            url: '',
+            data: {
+              username: this.username,
+            },
+          }).then(res => {
+            // this.userToken = res.data
+            localStorage.setItem(this.username, this.username);
+            this.$router.push({name: 'home', params: {username: this.username}});
+          }).catch(error => {
+            alert('用户名错误');
+            console.log(error);
+          });
+        }
+      },
+      validate () {
+        if (!this.username.trim()) {
+          this.errorMsg = '用户名不能为空';
+          return false;
+        }
+        this.errorMsg = '';
+        return true;
+      },
+      handleRegist () {
+        if (this.errorMsg) {
+          this.errorMsg = '';
+        }
+        this.title = '注册';
+      },
+    },
+  };
 </script>
 
-<style media="screen">
-  .login-form{
+<style>
+  body {
+    background-image: url(../../../static/img/loginBac.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .login-form {
     width: 500px;
     margin: 0 auto;
-    height: 350px;
+    display: flex;
     background-color: #fff;
     border: 1px solid #aaa;
-    padding-left: 60px;
-    padding-top: 30px;
+    padding: 30px 0px 30px 60px;
+    flex-direction: column;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
-  .error-msg{
+
+  .error-msg {
     font-size: 14px;
     color: #e15050;
     margin-left: 10px;
   }
-  .login-input{
+
+  .login-input {
     width: 400px;
     font-size: 20px;
     height: 16px;
@@ -84,8 +100,11 @@ export default {
     padding: 10px;
     margin-top: 30px;
   }
-  .login-btn{
-    width: 425px;
+
+  .login-btn, .regist-btn {
+    margin-right: 24px;
+    display: inline-block;
+    width: 200px;
     font-size: 20px;
     height: 40px;
     color: #fff;
@@ -94,7 +113,8 @@ export default {
     margin-top: 30px;
     transition: .3s all;
   }
-  .login-btn:hover{
+
+  .login-btn:hover, .regist-btn:hover {
     background-color: #e91e63;
   }
 </style>

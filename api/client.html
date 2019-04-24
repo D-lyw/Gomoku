@@ -14,16 +14,27 @@
         <button id="btn_start">开始游戏</button>
         <br>
         状态: <span id="startStatus"></span>
+
+
+        <button id="chess">下棋</button><br>
+        结果: <span id="result"></span>
+
+        <input type="text" id="sendMsg"><button id="send">发送消息</button>
+        <br/>
+        接收到的消息: <span id="showMsg"></span>
     </div>
 
 
-    <script src="./node_modules/socket.io-client/dist/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script>
-        var socket = io.connect('http://localhost:8080');
+        var socket = io.connect('http://39.108.10.155:8080');
         socket.on('connect', function() {
             console.log(socket.id + "连接到服务器...")
         })
         
+        var myTurn = false;
+        var againstId;
+
         socket.emit('newUserName', { userName: "Tom"});
         socket.on('test', function(msg) {
             console.log(msg);
@@ -31,13 +42,38 @@
         document.getElementById("btn_start").addEventListener('click', function(e){
             socket.emit('startGame', {userName: "d-lyw", id: socket.id});
             socket.on('startGameResponse', (msg) => {
-                if(msg.status == 0){
+                if(msg.status == 0){                                // 匹配成功
                     document.getElementById('startStatus').innerHTML = msg.againstName;
+                    myTurn = msg.myTurn;                            // 记录谁是先手
+                    againstId = msg.againstId;
                 }else{
                     document.getElementById('startStatus').innerHTML = "匹配失败"
                 }
-             
             })
+        })
+
+        document.getElementById('chess').addEventListener('click', (e) => {
+            if(myTurn){
+                socket.emit('chess', {isWin: false, coordinate: [3, 4], againstId: againstId, myTurn: true})
+            }
+            
+        })
+
+        document.getElementById('send').addEventListener('click', () => {
+            var val = document.getElementById('sendMsg').value;
+            socket.emit('sendMsg', {againstId: againstId, msg: val});
+        })
+        socket.on('recvMsg', (msg) => {
+            document.getElementById('showMsg').innerHTML = msg.msg;
+        })
+
+        // 监听当对手弃权或掉线时
+        socket.on('accident', (msg) => {
+            if(msg.status == 0){
+                document.getElementById("result").innerHTML = "对方掉线";
+            }else if(msg.status == 1){
+                document.getElementById("result").innerHTML = "对方认输";
+            }
         })
     </script>
 </body>

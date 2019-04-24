@@ -6,9 +6,9 @@ import router from './router'
 import VueSocketio from 'vue-socket.io'
 import socketio from 'socket.io-client'
 
-// Vue.use(new VueSocketio({
-//   connection: socketio('xx:80')
-// }))
+Vue.use(new VueSocketio({
+  connection: socketio('http://39.108.10.155:8080')
+}))
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
@@ -18,3 +18,4 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+
