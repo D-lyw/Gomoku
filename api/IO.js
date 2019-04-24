@@ -24,7 +24,7 @@ io.on('connection', (socket) => {
 
         console.log("newUser coming --- " + msg.userName + "\n");
         console.log(`当前在线用户共 ${Object.keys(socketList).length} 人\n\n`);
-        
+
         // 将用户名称存入在线玩家列表
         socketList[socket.id].name = msg.userName;
     })
@@ -104,6 +104,17 @@ io.on('connection', (socket) => {
 
             // 重置双方的游戏状态
             util.resetStatus(socketList, socket.id, socketList[socket.id].opponent);
+        }
+        if(msg.status == 0){
+            socket.to(socketList[socket.id].opponent).emit('accident', {status: 0});
+            // 重置双方的游戏状态
+            util.resetStatus(socketList, socket.id, socketList[socket.id].opponent);
+        }
+        if(msg.status == 2){
+            socket.to(socketList[socket.id].opponent).emit('accident', {status: 2});
+            socket.on('repentRespose', (msg) =>　{      // msg格式　｛ isAgree: false }
+                socket.to(socketList[socket.id].opponent).emit('reciveRepentResult', { isAgree: msg.isAgree });
+            })
         }
     })
 
