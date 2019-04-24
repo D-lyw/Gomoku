@@ -16,7 +16,6 @@
   #chessBtn {
     display: flex;
     flex-direction: column;
-    width: 130px;
     height: 140px;
     border-radius: 5px;
     align-items: center;

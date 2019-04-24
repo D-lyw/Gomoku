@@ -2,20 +2,33 @@
   <div id="home">
     <div class="container">
       <div class="game-left">
-        <avatar></avatar>
-        <timer></timer>
-        <chessbtns></chessbtns>
+        <div class="avatar">
+          <avatar></avatar>
+        </div>
+        <div class="timer">
+          <timer></timer>
+        </div>
+        <div class="chessbtns">
+          <chessbtns></chessbtns>
+        </div>
       </div>
       <div class="game-mid">
-        <chessboard :myTurn="myTurn" :againstId="againstId" :myColor="myColor" :coordinate="coordinate" :map="map"></chessboard>
+        <!--<barrage></barrage>-->
+        <chessboard :myTurn="myTurn" :againstId="againstId" :myColor="myColor" :coordinate="coordinate"
+                    :isLose="isLose" :username="username" :userId="userId"></chessboard>
       </div>
       <div class="game-right">
-        <avatar></avatar>
-        <timer></timer>
-        <cheatpanel></cheatpanel>
+        <div class="avatar">
+          <avatar></avatar>
+        </div>
+        <div class="timer">
+          <timer></timer>
+        </div>
+        <div class="msgslist">
+          <msgslist :againstId="againstId"></msgslist>
+        </div>
       </div>
     </div>
-    <button @click="startGame">开始游戏</button>
   </div>
 </template>
 
@@ -24,7 +37,9 @@
   import chessboard from '../../components/chessboard/chessboard';
   import chessbtns from '../../components/chessbtns/chessbtns';
   import timer from '../../components/timer/timer';
-  import cheatpanel from '../../components/cheatpanel/cheatpanel';
+  import msgslist from '../msgslist/msgslist';
+  import barrage from '../barrage/barrage';
+
   export default {
     name: 'home',
     components: {
@@ -32,103 +47,85 @@
       timer,
       chessboard,
       chessbtns,
-      cheatpanel,
+      msgslist,
+      barrage,
     },
     data () {
       return {
         userId: '',
         coordinate: [],
         username: '',
-        sendMsg: '',
+        // sendMsg: '',
         againstId: '',
         againstName: '',
         myTurn: true,
-        reciveMsg: '',
+        // reciveMsg: '',
         myColor: -1,
-        map: [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        ]
-      }
+        isLose: false,
+      };
     },
-    mounted() {
-      this.username = this.$route.params.username
-      this.$socket.emit('connect')
-      window.onbeforeunload  = (e) => {
-        console.log(this.username)
-        localStorage.removeItem(this.username)
-        console.log(111)
-        return true
-      }
-      var token = localStorage.getItem(this.username)
-      if(!token) {
-        this.$router.push('login')
+    mounted () {
+      this.username = this.$route.params.username;
+      this.$socket.emit('connect');
+      window.onbeforeunload = (e) => {
+        console.log(this.username);
+        localStorage.removeItem(this.username);
+        console.log(111);
+        return true;
+      };
+      var token = localStorage.getItem(this.username);
+      if (!token) {
+        this.$router.push('login');
       }
     },
     sockets: {
       connect () {
-        this.userId = this.$socket.id
-        console.log(this.username + '----connected')
-        this.$socket.emit('newUserName', {userName: this.username})
+        this.userId = this.$socket.id;
+        console.log(this.username + '----connected');
+        this.$socket.emit('newUserName', {userName: this.username});
       },
       chessResponse (data) {
-        this.coordinate = data.coordinate
-        this.myTurn = data.myTurn
+        this.coordinate = data.coordinate;
+        this.myTurn = data.myTurn;
+        this.isLose = data.isLose
         if (!data.isLose) {
           // 重新计时，画对手棋子
-          console.log(this.coordinate)
-        } else {
-          var res = confirm('你输了')
+          console.log(this.coordinate);
         }
       },
-      reciveMsg (data) {
-        this.reciveMsg = data.msg
-      },
+      // reciveMsg (data) {
+      //   this.reciveMsg = data.msg;
+      // },
       changeTurn (data) {
-        this.myTurn = data.myTurn
+        this.myTurn = data.myTurn;
       },
       startGameResponse (data) {
-        if(data.status == 0){
+        if (data.status == 0) {
           // 匹配成功
-          console.log('匹配成功')
-          this.againstId = data.againstId
-          this.againstName = data.againstName
-          this.myTurn = data.myTurn
-          this.myColor = this.myTurn ? -1 : 1
-          if(this.myTurn) {
-            console.log('你是先手')
+          console.log('匹配成功');
+          this.againstId = data.againstId;
+          this.againstName = data.againstName;
+          this.myTurn = data.myTurn;
+          this.myColor = this.myTurn ? -1 : 1;
+          if (this.myTurn) {
+            console.log('你是先手');
           } else {
-            console.log('你是后手')
+            console.log('你是后手');
           }
         } else {
           // 匹配失败
           // 显示信息
-          console.log('匹配失败')
+          console.log('匹配失败');
         }
-      }
+      },
     },
     methods: {
-      startGame() {
-        this.$socket.emit('startGame', {userName: this.username, id: this.userId})
-      },
-      newMessage() {
-        if(!this.againstId) {
-          this.$socket.emit('sendMsg', { againstId: this.againstId, msg: this.sendMsg})
-        }
-      }
-    }
+      // newMessage () {
+      //   if (!this.againstId) {
+      //     this.$socket.emit('sendMsg', {againstId: this.againstId, msg: this.sendMsg});
+      //   }
+      // },
+    },
   };
 </script>
 
@@ -140,14 +137,33 @@
       justify-content: center;
       .game-left {
         width: 280px;
+        .avatar {
+          margin-top: 10px;
+        }
+        .timer {
+          margin-top: 50px;
+        }
+        .chessbtns {
+          margin-top: 50px;
+        }
       }
       .game-mid {
         width: 600px;
-        height: 560px;
+        height: 580px;
+        margin-top: 10px;
         border: 1px solid black;
       }
       .game-right {
         width: 280px;
+        .avatar {
+          margin-top: 10px;
+        }
+        .timer {
+          margin-top: 50px;
+        }
+        .msgslist {
+          margin-left: 20px;
+        }
       }
     }
   }
