@@ -33,10 +33,30 @@
 <script>
   export default {
     name: 'msgslist',
-    props: {
-      msgs: {
-        type: Array,
-      },
+    data () {
+      return {
+        msgs: [
+          {
+            username: '张三',
+            cont: '你好！李四李四李四李李四李四李四李四李' +
+            '四李四李四李四李四李四李四李四李四李四李四李' +
+            '四李四李四李四李四李四四李四李四李四李四李四',
+            type: 'send',
+          },
+          {
+            username: '李四',
+            cont: '你呢李四李四李四李四李四李四李四李四李四李四李四李四' +
+            '李四李四李四李四李四李四李四李四李四李四李四李四' +
+            '李四李四李四李四李四李四李四',
+            type: 'receive',
+          },
+          {
+            username: '李四',
+            cont: '你呢李四李四李',
+            type: 'receive',
+          },
+        ],
+      };
     },
     mounted () {
       // this.$nextTick(() => {
@@ -48,13 +68,14 @@
         var result = this.$refs.input.value;
         var msgslist = this.$refs.msgslist;
         if (!result) return;
-        var newMsg = {
-          username: '李四',
-          cont: result,
-          type: 'send',
-        };
-        this.msgs.push(newMsg);
+        result={
+          'username':'李四',
+          'cont':result,
+          'type':'send'
+        }
+        this.msgs.push(result);
         this.$refs.input.value = '';
+        console.log(this.msgs);
         this.$nextTick(() => {
           msgslist.scrollTop = msgslist.scrollHeight;
         });

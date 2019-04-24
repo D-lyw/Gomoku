@@ -1,0 +1,12 @@
+{
+    "topWin": [
+        {
+            "name": "abc",
+            "time": 10
+        },{
+            "name": "D-lyw",
+            "time": 3
+        }
+    ],
+    "minWinTime": 3
+}

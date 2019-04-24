@@ -8,14 +8,15 @@
         <div class="timer">
           <timer></timer>
         </div>
-        <div  class="chessbtns">
+        <div class="chessbtns">
           <chessbtns></chessbtns>
         </div>
       </div>
       <div class="game-mid">
-        <!--<chessboard></chessboard>-->
-        <barrage></barrage>
-        <div v-if="showStart" class="startgame">开始游戏</div>
+        <!--<barrage></barrage>-->
+        <chessboard :myTurn="myTurn" :againstId="againstId" :myColor="myColor" :coordinate="coordinate"
+                    :map="map"></chessboard>
+        <div v-if="showStart" @click="startGame" class="startgame">开始游戏</div>
       </div>
       <div class="game-right">
         <div class="avatar">
@@ -25,7 +26,7 @@
           <timer></timer>
         </div>
         <div class="msgslist">
-          <msgslist :msgs="msgs"></msgslist>
+          <msgslist ></msgslist>
         </div>
       </div>
     </div>
@@ -42,39 +43,127 @@
 
   export default {
     name: 'home',
-    data () {
-      return {
-        showStart:true,
-        msgs: [
-          {
-            username: '张三',
-            cont: '你好！李四李四李四李李四李四李四李四李' +
-            '四李四李四李四李四李四李四李四李四李四李四李' +
-            '四李四李四李四李四李四四李四李四李四李四李四',
-            type: 'send',
-          },
-          {
-            username: '李四',
-            cont: '你呢李四李四李四李四李四李四李四李四李四李四李四李四' +
-            '李四李四李四李四李四李四李四李四李四李四李四李四' +
-            '李四李四李四李四李四李四李四',
-            type: 'receive',
-          },
-          {
-            username: '李四',
-            cont: '你呢李四李四李',
-            type: 'receive',
-          },
-        ],
-      };
-    },
     components: {
       avatar,
       timer,
       chessboard,
       chessbtns,
       msgslist,
-      barrage
+      barrage,
+    },
+    data () {
+      return {
+        userId: '',
+        coordinate: [],
+        username: '',
+        sendMsg: '',
+        againstId: '',
+        againstName: '',
+        myTurn: true,
+        reciveMsg: '',
+        myColor: -1,
+        showStart: true,
+        map: [
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        ],
+      };
+    },
+    mounted () {
+      this.username = this.$route.params.username;
+      this.$socket.emit('connect');
+      window.onbeforeunload = (e) => {
+        console.log(this.username);
+        localStorage.removeItem(this.username);
+        console.log(111);
+        return true;
+      };
+      var token = localStorage.getItem(this.username);
+      if (!token) {
+        this.$router.push('login');
+      }
+    },
+    sockets: {
+      connect () {
+        this.userId = this.$socket.id;
+        console.log(this.username + '----connected');
+        this.$socket.emit('newUserName', {userName: this.username});
+      },
+      chessResponse (data) {
+        this.coordinate = data.coordinate;
+        this.myTurn = data.myTurn;
+        if (!data.isLose) {
+          // 重新计时，画对手棋子
+          console.log(this.coordinate);
+        } else {
+          this.showStart=!this.showStart;
+          var res = confirm('你输了');
+          this.map = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          ];
+        }
+      },
+      reciveMsg (data) {
+        this.reciveMsg = data.msg;
+      },
+      changeTurn (data) {
+        this.myTurn = data.myTurn;
+      },
+      startGameResponse (data) {
+        if (data.status == 0) {
+          // 匹配成功
+          console.log('匹配成功');
+          this.againstId = data.againstId;
+          this.againstName = data.againstName;
+          this.myTurn = data.myTurn;
+          this.myColor = this.myTurn ? -1 : 1;
+          if (this.myTurn) {
+            console.log('你是先手');
+          } else {
+            console.log('你是后手');
+          }
+        } else {
+          // 匹配失败
+          // 显示信息
+          console.log('匹配失败');
+        }
+      },
+    },
+    methods: {
+      startGame () {
+        this.showStart=!this.showStart;
+        this.$socket.emit('startGame', {userName: this.username, id: this.userId});
+      },
+      newMessage () {
+        if (!this.againstId) {
+          this.$socket.emit('sendMsg', {againstId: this.againstId, msg: this.sendMsg});
+        }
+      },
     },
   };
 </script>
@@ -87,13 +176,13 @@
       justify-content: center;
       .game-left {
         width: 280px;
-        .avatar{
+        .avatar {
           margin-top: 10px;
         }
-        .timer{
+        .timer {
           margin-top: 50px;
         }
-        .chessbtns{
+        .chessbtns {
           margin-top: 50px;
         }
       }
@@ -101,9 +190,9 @@
         position: relative;
         width: 600px;
         height: 580px;
-        margin-top: 16px;
+        margin-top: 10px;
         border: 1px solid black;
-        .startgame{
+        .startgame {
           position: absolute;
           top: 60%;
           left: 50%;
@@ -114,7 +203,7 @@
           width: 120px;
           height: 40px;
           border-radius: 3px;
-          color:white;
+          color: white;
           text-align: center;
           font-weight: bold;
           border: 3px solid #d06e34;
@@ -125,13 +214,13 @@
       }
       .game-right {
         width: 280px;
-        .avatar{
+        .avatar {
           margin-top: 10px;
         }
-        .timer{
+        .timer {
           margin-top: 50px;
         }
-        .msgslist{
+        .msgslist {
           margin-left: 20px;
         }
       }
