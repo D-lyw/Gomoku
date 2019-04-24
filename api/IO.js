@@ -57,7 +57,7 @@ io.on('connection', (socket) => {
             matching = matching.filter((item) => {      
                 return item != socket.id && item != result;
             })
-            
+
             var myTurn = socket.id > result;
             // 告诉双方匹配成功
             socket.to(result).emit('startGameResponse', {status: 0, againstId: socket.id, againstName: socketList[socket.id].name, myTurn: myTurn});
@@ -87,7 +87,8 @@ io.on('connection', (socket) => {
         }else{
             // 通知输掉的一方
             socket.to(msg.againstId).emit('chessResponse', {againstId: msg.againstId, myTurn: false, isWin: false, isLose: true, coordinate: msg.coordinate});
-
+            socket.emit('changeTurn', { myTurn: false})
+            
             // 重置双方的游戏状态
             util.resetStatus(socketList, socket.id, msg.againstId);
         }

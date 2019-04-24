@@ -14,7 +14,7 @@
 
 <script>
 import axios from 'axios'
-import Bus from '../../bus/bus'
+// import Bus from '../../bus/bus'
 export default {
   metaInfo: {
     title: 'Login page'
@@ -39,8 +39,7 @@ export default {
           }
         }).then(res => {
           // this.userToken = res.data
-          localStorage.setItem('Authorization', this.userToken)
-          Bus.$emit('routeChange', this.username)
+          localStorage.setItem(this.username, this.username)
           this.$router.push({name: 'home', params: {username: this.username}})
         }).catch(error => {
           alert('用户名错误')
