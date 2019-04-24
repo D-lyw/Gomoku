@@ -16,7 +16,12 @@
         状态: <span id="startStatus"></span>
 
 
-        <button id="chess">下棋</button>
+        <button id="chess">下棋</button><br>
+        结果: <span id="result"></span>
+
+        <input type="text" id="sendMsg"><button id="send">发送消息</button>
+        <br/>
+        接收到的消息: <span id="showMsg"></span>
     </div>
 
 
@@ -44,7 +49,6 @@
                 }else{
                     document.getElementById('startStatus').innerHTML = "匹配失败"
                 }
-             
             })
         })
 
@@ -53,6 +57,23 @@
                 socket.emit('chess', {isWin: false, coordinate: [3, 4], againstId: againstId, myTurn: true})
             }
             
+        })
+
+        document.getElementById('send').addEventListener('click', () => {
+            var val = document.getElementById('sendMsg').value;
+            socket.emit('sendMsg', {againstId: againstId, msg: val});
+        })
+        socket.on('recvMsg', (msg) => {
+            document.getElementById('showMsg').innerHTML = msg.msg;
+        })
+
+        // 监听当对手弃权或掉线时
+        socket.on('accident', (msg) => {
+            if(msg.status == 0){
+                document.getElementById("result").innerHTML = "对方掉线";
+            }else if(msg.status == 1){
+                document.getElementById("result").innerHTML = "对方认输";
+            }
         })
     </script>
 </body>
