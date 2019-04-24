@@ -13,5 +13,6 @@
 <style scoped lang="scss">
   #chessBoard{
     width: 600px;
+    height: 580px;
   }
 </style>
