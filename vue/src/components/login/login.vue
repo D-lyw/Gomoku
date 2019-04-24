@@ -14,7 +14,6 @@
 
 <script>
 import axios from 'axios'
-// import Bus from '../../bus/bus'
 export default {
   metaInfo: {
     title: 'Login page'
