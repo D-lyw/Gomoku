@@ -65,12 +65,12 @@
         this.myTurn = res.myTurn
       })
       this.$socket.emit('connect')
+      this.$socket.emit('newUserName', {username: this.username})
     },
     sockets: {
       connect () {
         this.userId = this.$socket.id
-        console.log(this.username)
-        this.$socket.emit('newUserName', {username: this.username})
+        // this.$socket.emit('newUserName', {username: this.username})
       }
     },
     methods: {
