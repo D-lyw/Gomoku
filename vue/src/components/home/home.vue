@@ -15,8 +15,7 @@
       <div class="game-mid">
         <!--<barrage></barrage>-->
         <chessboard :myTurn="myTurn" :againstId="againstId" :myColor="myColor" :coordinate="coordinate"
-                    :map="map"></chessboard>
-        <div v-if="showStart" @click="startGame" class="startgame">开始游戏</div>
+                    :isLose="isLose" :username="username" :userId="userId"></chessboard>
       </div>
       <div class="game-right">
         <div class="avatar">
@@ -26,7 +25,7 @@
           <timer></timer>
         </div>
         <div class="msgslist">
-          <msgslist :reciveMsg="reciveMsg"></msgslist>
+          <msgslist :reciveMsg="reciveMsg" :againstId="againstId"></msgslist>
         </div>
       </div>
     </div>
@@ -56,29 +55,13 @@
         userId: '',
         coordinate: [],
         username: '',
-        sendMsg: '',
+        // sendMsg: '',
         againstId: '',
         againstName: '',
-        myTurn: true,
+        myTurn: false,
         reciveMsg: '',
         myColor: -1,
-        showStart: true,
-        map: [
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        ],
+        isLose: false,
       };
     },
     mounted () {
@@ -104,28 +87,10 @@
       chessResponse (data) {
         this.coordinate = data.coordinate;
         this.myTurn = data.myTurn;
+        this.isLose = data.isLose;
         if (!data.isLose) {
           // 重新计时，画对手棋子
           console.log(this.coordinate);
-        } else {
-          this.showStart = !this.showStart;
-          var res = confirm('你输了');
-          this.map = [
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          ];
         }
       },
       reciveMsg (data) {
@@ -159,7 +124,6 @@
         this.showStart = !this.showStart;
         this.$socket.emit('startGame', {userName: this.username, id: this.userId});
       },
-
     },
   };
 </script>
@@ -183,33 +147,9 @@
         }
       }
       .game-mid {
-        position: relative;
         width: 600px;
         height: 580px;
         margin-top: 10px;
-        .startgame {
-          position: absolute;
-          top: 60%;
-          left: 50%;
-          transform: translateX(-50%);
-          font-size: 22px;
-          box-sizing: border-box;
-          background-color: #d06e34;
-          width: 120px;
-          height: 40px;
-          border-radius: 3px;
-          color: white;
-          text-align: center;
-          font-weight: bold;
-          border: 3px solid #d06e34;
-          border-bottom-color: #bb5b22;
-          text-shadow: .1em .1em 0 #a5501e;
-          cursor: pointer;
-        }
-        .startgame:hover {
-          background-color: #db763b;
-          border-bottom-color: #c56025
-        }
       }
       .game-right {
         width: 280px;

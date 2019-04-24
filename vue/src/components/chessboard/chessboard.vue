@@ -7,6 +7,7 @@
         <span v-else></span>
       </div>
     </div>
+    <div v-if="showStart" @click="startGame" class="startgame">开始游戏</div>
   </div>
 </template>
 
@@ -15,31 +16,75 @@
 
   export default {
     name: 'chess-board',
-    props: ['myTurn', 'againstId', 'myColor', 'coordinate', 'map'],
+    props: ['myTurn', 'againstId', 'myColor', 'coordinate', 'isLose', 'username', 'userId'],
+    data () {
+      return {
+        showStart: true,
+        initMap: [
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        ],
+        map: [],
+      };
+    },
+    mounted(){
+      this.map=this.initMap;
+    },
     methods: {
       doChess (row, col) {
         console.log(this.myTurn);
         if (this.myTurn) {
           if (this.map[row][col] === 0) {
+
             this.$set(this.map[row], col, this.myColor);
+            // 先判断是否胜利
+            var ifWin = isWin(this.map, row, col);
+            if (ifWin) {
+              setTimeout(() => {
+                alert('你赢了');
+                this.showStart = !this.showStart;
+              }, 0);
+            }
+            var x = row;
+            var y = col;
+            var sendObj = {
+              againstId: this.againstId,
+              coordinate: [x, y],
+              isWin: ifWin,
+              myTurn: true,
+            };
+            this.$socket.emit('chess', sendObj);
+
           }
-          // 先判断是否胜利
-          var ifWin = isWin(this.map, row, col);
-          var x = row;
-          var y = col;
-          var sendObj = {
-            againstId: this.againstId,
-            coordinate: [x, y],
-            isWin: ifWin,
-            myTurn: true,
-          };
-          this.$socket.emit('chess', sendObj);
         }
+      },
+      startGame () {
+        this.showStart = !this.showStart;
+        this.map = this.initMap;
+        this.$socket.emit('startGame', {userName: this.username, id: this.userId});
       },
     },
     watch: {
       coordinate: function () {
         this.$set(this.map[this.coordinate[0]], this.coordinate[1], this.myColor * -1);
+        if (this.isLose) {
+          setTimeout(() => {
+            alert('你输了');
+            this.showStart = !this.showStart;
+          }, 0);
+        }
       },
     },
   };
@@ -52,10 +97,35 @@
     position: relative;
     width: 100%;
     height: 100%;
+    background-color: bisque;
+    .startgame {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 22px;
+      box-sizing: border-box;
+      background-color: #d06e34;
+      width: 120px;
+      height: 40px;
+      border-radius: 3px;
+      color: white;
+      text-align: center;
+      font-weight: bold;
+      border: 3px solid #d06e34;
+      border-bottom-color: #bb5b22;
+      text-shadow: .1em .1em 0 #a5501e;
+      cursor: pointer;
+    }
+    .startgame:hover {
+      background-color: #db763b;
+      border-bottom-color: #c56025
+    }
     .row {
       width: 100%;
       height: 7.15%;
       display: flex;
+
       .col {
         width: 7.15%;
         height: 100%;

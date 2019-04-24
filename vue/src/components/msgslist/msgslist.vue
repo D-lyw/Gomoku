@@ -56,6 +56,7 @@
             type: 'receive',
           },
         ],
+        sendMsg: '',
       };
     },
     props: {
@@ -76,6 +77,11 @@
       // this.$nextTick(() => {
       //   msgslist.scrollTop = msgslist.scrollHeight;
       // });
+    },
+    sockets: {
+      reciveMsg (data) {
+        this.reciveMsg = data.msg;
+      },
     },
     methods: {
       submit () {
