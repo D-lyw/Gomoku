@@ -57,10 +57,11 @@ io.on('connection', (socket) => {
             matching = matching.filter((item) => {      
                 return item != socket.id && item != result;
             })
-
+            
+            var myTurn = socket.id > result;
             // 告诉双方匹配成功
-            socket.to(result).emit('startGameResponse', {status: 0, againstId: socket.id, againstName: socketList[socket.id].name, myTurn: false});
-            socket.emit('startGameResponse', {status: 0, againstId: result, againstName: socketList[result].name, myTurn: true});
+            socket.to(result).emit('startGameResponse', {status: 0, againstId: socket.id, againstName: socketList[socket.id].name, myTurn: myTurn});
+            //socket.emit('startGameResponse', {status: 0, againstId: result, againstName: socketList[result].name, myTurn: true});
             
             console.log(`用户 ${socketList[socket.id].name} 和 用户 ${socketList[result].name} 游戏匹配成功....\n`);
         }).catch(() => {
