@@ -13,65 +13,66 @@
 </template>
 
 <script>
-import axios from 'axios'
-// import Bus from '../../bus/bus'
-export default {
-  metaInfo: {
-    title: 'Login page'
-  },
-  data () {
-    return {
-      username: '',
-      errorMsg: '',
-      userToken: '',
-      title: '登录'
-    }
-  },
-  methods: {
-    doSubmit (e) {
-      e.preventDefault()
-      if (this.validate()) {
-        axios({
-          methods: 'post',
-          url: '',
-          data: {
-            username: this.username
-          }
-        }).then(res => {
-          // this.userToken = res.data
-          localStorage.setItem(this.username, this.username)
-          this.$router.push({name: 'home', params: {username: this.username}})
-        }).catch(error => {
-          alert('用户名错误')
-          console.log(error)
-        })
-      }
+  import axios from 'axios';
+
+  export default {
+    metaInfo: {
+      title: 'Login page',
     },
-    validate () {
-      if (!this.username.trim()) {
-        this.errorMsg = '用户名不能为空'
-        return false
-      }
-      this.errorMsg = ''
-      return true
+    data () {
+      return {
+        username: '',
+        errorMsg: '',
+        userToken: '',
+        title: '登录',
+      };
     },
-    handleRegist () {
-      if (this.errorMsg) {
-        this.errorMsg = ''
-      }
-      this.title = '注册'
-    }
-  }
-}
+    methods: {
+      doSubmit (e) {
+        e.preventDefault();
+        if (this.validate()) {
+          axios({
+            methods: 'post',
+            url: '',
+            data: {
+              username: this.username,
+            },
+          }).then(res => {
+            // this.userToken = res.data
+            localStorage.setItem(this.username, this.username);
+            this.$router.push({name: 'home', params: {username: this.username}});
+          }).catch(error => {
+            alert('用户名错误');
+            console.log(error);
+          });
+        }
+      },
+      validate () {
+        if (!this.username.trim()) {
+          this.errorMsg = '用户名不能为空';
+          return false;
+        }
+        this.errorMsg = '';
+        return true;
+      },
+      handleRegist () {
+        if (this.errorMsg) {
+          this.errorMsg = '';
+        }
+        this.title = '注册';
+      },
+    },
+  };
 </script>
 
 <style>
-   body {
-     background-image: url(../../../static/img/loginBac.jpg);
-     background-repeat: no-repeat;
-     background-size: cover;
-   }
-  .login-form{
+  body {
+    background-image: url(../../../static/img/loginBac.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .login-form {
     width: 500px;
     margin: 0 auto;
     display: flex;
@@ -84,12 +85,14 @@ export default {
     left: 50%;
     transform: translate(-50%, -50%);
   }
-  .error-msg{
+
+  .error-msg {
     font-size: 14px;
     color: #e15050;
     margin-left: 10px;
   }
-  .login-input{
+
+  .login-input {
     width: 400px;
     font-size: 20px;
     height: 16px;
@@ -97,7 +100,8 @@ export default {
     padding: 10px;
     margin-top: 30px;
   }
-  .login-btn, .regist-btn{
+
+  .login-btn, .regist-btn {
     margin-right: 24px;
     display: inline-block;
     width: 200px;
@@ -109,7 +113,8 @@ export default {
     margin-top: 30px;
     transition: .3s all;
   }
-  .login-btn:hover, .regist-btn:hover{
+
+  .login-btn:hover, .regist-btn:hover {
     background-color: #e91e63;
   }
 </style>
