@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="row" v-for="(rowData, rowIndex) in map" :key="rowIndex">
+    <div class="row" v-for="(rowData, rowIndex) in chessMap" :key="rowIndex">
       <div class="col" v-for="(colData, colIndex) in rowData" :key="colIndex" @click="doChess(rowIndex, colIndex)">
         <span v-if="colData === 1" class="white"></span>
         <span v-else-if="colData === -1" class="black"></span>
@@ -15,15 +15,23 @@ import isWin from '../../utils/isWin'
 export default {
   name: "chess-board",
   props: ['myTurn', 'againstId', 'myColor', 'coordinate', 'map'],
+  data () {
+    return {
+      chessMap: this.map
+    }
+  },
   methods: {
     doChess(row, col) {
       console.log(this.myTurn)
       if(this.myTurn) {
-        if(this.map[row][col] === 0) {
-          this.$set(this.map[row], col, this.myColor)
+        if(this.chessMap[row][col] === 0) {
+          this.$set(this.chessMap[row], col, this.myColor)
         }
         // 先判断是否胜利
-        var ifWin = isWin(this.map, row, col)
+        var ifWin = isWin(this.chessMap, row, col)
+        if(ifWin) {
+          alert('你赢了')
+        }
         var x = row
         var y = col
         var sendObj = {
