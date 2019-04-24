@@ -1,53 +1,136 @@
 export default function isWin(map, row, column) {
 	let r = row,
 		c = column,
-		currentPoint = map[r][c],
-		count1 = 0,
-		count2 = 0,
-		count3 = 0,
-		count4 = 0
-	for (let i = 1; i < 5; i++) {
-		//横向
-		if ((c - i >= 0 && map[r][c - i] == currentPoint) || (c + i < map[0].length && map[r][c + i] == currentPoint)) {
-			++count1
+		rowLength = map.length,
+		columnLength = map[0].length,
+		currentPoint = map[r][c]
+		function judgeLeftDown2RightTop(r, c, currentPoint) {
+			if(c+1 < columnLength && c+2 < columnLength && c+3 < columnLength && c+4 < columnLength 
+				&& r-1 >= 0 && r-2 >= 0 && r-3 >= 0 && r-4 >= 0) {
+				if(map[r-1][c+1] == currentPoint && map[r-2][c+2] == currentPoint && map[r-3][c+3] == currentPoint && map[r-4][c+4] == currentPoint) {
+					return true
+				}
+			}
+			if(c-1 >= 0 && c-2 >= 0 && c-3 >= 0 && c-4 >= 0 && r+1 < rowLength && r+2 < rowLength && r+3 < rowLength && r+4 < rowLength) {
+				if(map[r+1][c-1] == currentPoint && map[r+2][c-2] == currentPoint && map[r+3][c-3] == currentPoint && map[r+4][c-4] == currentPoint) {
+					return true
+				}
+			}
+			if(c-1 >= 0 && c+1 < columnLength && c+2 < columnLength && c+3 < columnLength
+				&& r-1 >= 0 && r+1 < rowLength && r+2 < rowLength && r+3 < rowLength) {
+				if(map[r-1][c+1] == currentPoint && map[r-2][c+2] == currentPoint && map[r-3][c+3] == currentPoint && map[r+1][c-1] == currentPoint) {
+					return true
+				}
+			}
+			if(c-1 >= 0 && c-2 >= 0 && c+1 < columnLength && c+2 < columnLength  
+				&& r-1 >= 0 && r-2 >= 0 && r+1 < rowLength && r+2 < rowLength) {
+				if(map[r-1][c+1] == currentPoint && map[r-2][c+2] == currentPoint && map[r+1][c-1] == currentPoint && map[r+2][c-2] == currentPoint) {
+					return true
+				}
+			}
+			if(c-1 >= 0 && c-2 >= 0 && c-3 >= 0 && c+1 < columnLength
+				&& r-1 >= 0 && r-2 >= 0 && r-3 >= 0 && r+1 < rowLength) {
+					if(map[r+1][c-1] == currentPoint && map[r+2][c-2] == currentPoint && map[r+3][c-3] == currentPoint && map[r-1][c+1] == currentPoint) {
+						return true
+					}
+				}
 		}
-		//纵向
-		if ((r - i >= 0 && map[r - i][c] == currentPoint) || (r + i < map.length && map[r + i][c] == currentPoint)) {
-			++count2
+		function judgeLeftTop2RightDown(r, c, currentPoint) {
+			if(c+1 < columnLength && c+2 < columnLength && c+3 < columnLength && c+4 < columnLength 
+				&& r+1 < rowLength && r+2 < rowLength && r+3 < rowLength && r+4 < rowLength) {
+				if(map[r+1][c+1] == currentPoint && map[r+2][c+2] == currentPoint && map[r+3][c+3] == currentPoint && map[r+4][c+4] == currentPoint) {
+					return true
+				}
+			}
+			if(c-1 >= 0 && c-2 >= 0 && c-3 >= 0 && c-4 >= 0 && r-1 >= 0 && r-2 >= 0 && r-3 >= 0 && r-4 >= 0) {
+				if(map[r-1][c-1] == currentPoint && map[r-2][c-2] == currentPoint && map[r-3][c-3] == currentPoint && map[r-4][c-4] == currentPoint) {
+					return true
+				}
+			}
+			if(c-1 >= 0 && c+1 < columnLength && c+2 < columnLength && c+3 < columnLength
+				&& r-1 >= 0 && r+1 < rowLength && r+2 < rowLength && r+3 < rowLength) {
+				if(map[r-1][c-1] == currentPoint && map[r+1][c+1] == currentPoint && map[r+2][c+2] == currentPoint && map[r+3][c+3] == currentPoint) {
+					return true
+				}
+			}
+			if(c-1 >= 0 && c-2 >= 0 && c+1 < columnLength && c+2 < columnLength  
+				&& r-1 >= 0 && r-2 >= 0 && r+1 < rowLength && r+2 < rowLength) {
+				if(map[r-1][c-1] == currentPoint && map[r-2][c-2] == currentPoint && map[r+1][c+1] == currentPoint && map[r+2][c+2] == currentPoint) {
+					return true
+				}
+			}
+			if(c-1 >= 0 && c-2 >= 0 && c-3 >= 0 && c+1 < columnLength
+				&& r-1 >= 0 && r-2 >= 0 && r-3 >= 0 && r+1 < rowLength) {
+					if(map[r-1][c-1] == currentPoint && map[r-2][c-2] == currentPoint && map[r-3][c-3] == currentPoint && map[r+1][c+1] == currentPoint) {
+						return true
+					}
+				}
 		}
-		//左上方和右下方
-		if ((r - i >= 0 && c - i >= 0 && map[r - i][c - i] == currentPoint) || (r + i < map.length && c + i < map[0].length && map[r + i][c + i])) {
-			++count3
+		function judgeRow(r, c, currentPoint) {
+			if(c+1 < columnLength && c+2 < columnLength && c+3 < columnLength && c+4 < columnLength) {
+				if(map[r][c+1] == currentPoint && map[r][c+2] == currentPoint && map[r][c+3] == currentPoint && map[r][c+4] == currentPoint) {
+					return true
+				}
+			}
+			if(c-1 >= 0 && c-2 >= 0 && c-3 >= 0 && c-4 >= 0) {
+				if(map[r][c-1] == currentPoint && map[r][c-2] == currentPoint && map[r][c-3] == currentPoint && map[r][c-4] == currentPoint) {
+					return true
+				}
+			}
+			if(c-1 >= 0 && c+1 < columnLength && c+2 < columnLength && c+3 < columnLength) {
+				if(map[r][c-1] == currentPoint && map[r][c+1] == currentPoint && map[r][c+2] == currentPoint && map[r][c+3] == currentPoint) {
+					return true
+				}
+			}
+			if(c-1 >= 0 && c-2 >= 0 && c+1 < columnLength && c+2 < columnLength) {
+				if(map[r][c-1] == currentPoint && map[r][c-2] == currentPoint && map[r][c+1] == currentPoint && map[r][c+2] == currentPoint) {
+					return true
+				}
+			}
+			if(c-1 >= 0 && c-2 >= 0 && c-3 >= 0 && c+1 < columnLength) {
+				if(map[r][c-1] == currentPoint && map[r][c-2] == currentPoint && map[r][c-3] == currentPoint && map[r][c+1] == currentPoint) {
+					return true
+				}
+			}
 		}
-		//右上方和左下方
-		if ((r - i >= 0 && map[r - i][c + i] == currentPoint) || (r + i < map.length && c - i >= 0 && map[r + i][c - i] == currentPoint)) {
-			++count4
+		function judgeCol(r, c, currentPoint) {
+			if(r+1 < rowLength && r+2 < rowLength && r+3 < rowLength && r+4 < rowLength) {
+				if(map[r+1][c] == currentPoint && map[r+2][c] == currentPoint && map[r+3][c] == currentPoint && map[r+4][c] == currentPoint) {
+					return true
+				}
+			}
+			if(r-1 >= 0 && r-2 >= 0 && r-3 >= 0 && r-4 >= 0) {
+				if(map[r-1][c] == currentPoint && map[r-2][c] == currentPoint && map[r-3][c] == currentPoint && map[r-4][c] == currentPoint) {
+					return true
+				}
+			}
+			if(r-1 >= 0 && r+1 < rowLength && r+2 < rowLength && r+3 < rowLength) {
+				if(map[r-1][c] == currentPoint && map[r+1][c] == currentPoint && map[r+2][c] == currentPoint && map[r+3][c] == currentPoint) {
+					return true
+				}
+			}
+			if(r-1 >= 0 && r-2 >= 0 && r+1 < rowLength && r+2 < rowLength) {
+				if(map[r-1][c] == currentPoint && map[r-2][c] == currentPoint && map[r+1][c] == currentPoint && map[r+2][c] == currentPoint) {
+					return true
+				}
+			}
+			if(r-1 >= 0 && r-2 >= 0 && r-3 >= 0 && r+1 < rowLength) {
+				if(map[r-1][c] == currentPoint && map[r-2][c] == currentPoint && map[r-3][c] == currentPoint && map[r+1][c] == currentPoint) {
+					return true
+				}
+			}
 		}
-	}
-	// console.log(count1, count2, count3, count4)
-	if (count1 == 4 || count2 == 4 || count3 == 4 || count4 == 4) {
-		console.log('true')
-		return true
-	}
-	console.log('false')
-	return false
+		if(judgeLeftTop2RightDown(r, c, currentPoint)) {
+			return true
+		}
+		if(judgeLeftDown2RightTop(r, c, currentPoint)) {
+			return true
+		}
+		if(judgeRow(r, c, currentPoint)) {
+			return true
+		}
+		if(judgeCol(r, c, currentPoint)) {
+			return true
+		}
+		return false
 }
-
-var map1 = [
-	[1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1],
-	[0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1],
-	[1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1],
-	[0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1],
-	[1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1],
-	[0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1],
-	[1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1],
-	[0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1],
-	[1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1],
-	[1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1],
-	[1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1],
-	[1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1],
-	[1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1],
-	[1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1],
-]
-
-isWin(map1, 0, 1)
