@@ -49,7 +49,8 @@
     mounted() {
       Bus.$on('routeChange', username => {
         this.username = username
-        console.log(this.username)
+        console.log(this.username);
+        this.$socket.emit('newUserName', {userName: this.username})
       })
       this.$socket.on('chessResponse', (res) => {
         if(!res.isLose) {
@@ -70,7 +71,7 @@
       connect () {
         this.userId = this.$socket.id
         console.log(this.username)
-        this.$socket.emit('newUserName', {username: this.username})
+        
       }
     },
     methods: {
