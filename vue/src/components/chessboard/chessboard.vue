@@ -132,26 +132,19 @@
       width: 100%;
       height: 7.15%;
       display: flex;
-      .col {
-        width: 7.15%;
-        height: 100%;
-        border: 1px solid black;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        span {
-          display: inline-block;
-          width: 90%;
-          height: 90%;
-          border-radius: 50%;
-          // background-color: black;
-        }
-        span.white {
-          background-color: white;
-        }
-        span.black {
-          background-color: black;
-        }
+      justify-content: center;
+      align-items: center;
+      span {
+        display: inline-block;
+        width: 90%;
+        height: 90%;
+        border-radius: 50%;
+      }
+      span.white {
+        background-color: white;
+      }
+      span.black {
+        background-color: black;
       }
     }
   }
