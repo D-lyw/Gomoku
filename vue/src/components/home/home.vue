@@ -3,7 +3,7 @@
     <div class="container">
       <div class="game-left">
         <div class="avatar">
-          <avatar></avatar>
+          <avatar :username="username"></avatar>
         </div>
         <div class="timer">
           <timer></timer>
@@ -20,13 +20,13 @@
       </div>
       <div class="game-right">
         <div class="avatar">
-          <avatar></avatar>
+          <avatar :username="againstName"></avatar>
         </div>
         <div class="timer">
           <timer></timer>
         </div>
         <div class="msgslist">
-          <msgslist ></msgslist>
+          <msgslist :reciveMsg="reciveMsg"></msgslist>
         </div>
       </div>
     </div>
@@ -108,7 +108,7 @@
           // 重新计时，画对手棋子
           console.log(this.coordinate);
         } else {
-          this.showStart=!this.showStart;
+          this.showStart = !this.showStart;
           var res = confirm('你输了');
           this.map = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -135,7 +135,7 @@
         this.myTurn = data.myTurn;
       },
       startGameResponse (data) {
-        if (data.status == 0) {
+        if (data.status === 0) {
           // 匹配成功
           console.log('匹配成功');
           this.againstId = data.againstId;
@@ -156,14 +156,10 @@
     },
     methods: {
       startGame () {
-        this.showStart=!this.showStart;
+        this.showStart = !this.showStart;
         this.$socket.emit('startGame', {userName: this.username, id: this.userId});
       },
-      newMessage () {
-        if (!this.againstId) {
-          this.$socket.emit('sendMsg', {againstId: this.againstId, msg: this.sendMsg});
-        }
-      },
+
     },
   };
 </script>
@@ -191,7 +187,6 @@
         width: 600px;
         height: 580px;
         margin-top: 10px;
-        border: 1px solid black;
         .startgame {
           position: absolute;
           top: 60%;
@@ -211,9 +206,14 @@
           text-shadow: .1em .1em 0 #a5501e;
           cursor: pointer;
         }
+        .startgame:hover {
+          background-color: #db763b;
+          border-bottom-color: #c56025
+        }
       }
       .game-right {
         width: 280px;
+        position: relative;
         .avatar {
           margin-top: 10px;
         }
@@ -221,6 +221,8 @@
           margin-top: 50px;
         }
         .msgslist {
+          position: absolute;
+          bottom: 0;
           margin-left: 20px;
         }
       }

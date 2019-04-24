@@ -1,7 +1,7 @@
 <template>
     <div id="avatar">
       <div class="header"><img src="../../../static/img/avatar.jpg" alt="avatar"></div>
-      <div class="name">玩家A</div>
+      <div class="name">{{username}}</div>
 
     </div>
 </template>
@@ -9,6 +9,11 @@
 <script>
   export default {
     name: 'avatar',
+    props:{
+      username:{
+        type:String
+      }
+    }
   };
 </script>
 

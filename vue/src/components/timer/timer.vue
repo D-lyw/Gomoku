@@ -40,6 +40,7 @@
         width: 90px;
         height: 30px;
         border-radius: 8px;
+        background-color: white;
         border: 1px solid #dcdfe6;
       }
     }

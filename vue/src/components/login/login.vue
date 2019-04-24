@@ -69,7 +69,7 @@
   body {
     background-image: url(../../../static/img/loginBac.jpg);
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: 100% 100%;
   }
 
   .login-form {
@@ -96,7 +96,6 @@
     width: 400px;
     font-size: 20px;
     height: 16px;
-    line-height: 16px;
     padding: 10px;
     margin-top: 30px;
   }

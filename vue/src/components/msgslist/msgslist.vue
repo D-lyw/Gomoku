@@ -58,6 +58,20 @@
         ],
       };
     },
+    props: {
+      reciveMsg: {
+        type: String,
+      },
+    },
+    watch: {
+      reciveMsg: function (val) {
+        this.msgs.push(val);
+        console.log(this.msgs);
+        this.$nextTick(() => {
+          msgslist.scrollTop = msgslist.scrollHeight;
+        });
+      },
+    },
     mounted () {
       // this.$nextTick(() => {
       //   msgslist.scrollTop = msgslist.scrollHeight;
@@ -68,17 +82,23 @@
         var result = this.$refs.input.value;
         var msgslist = this.$refs.msgslist;
         if (!result) return;
-        result={
-          'username':'李四',
-          'cont':result,
-          'type':'send'
-        }
+        result = {
+          'username': '李四',
+          'cont': result,
+          'type': 'send',
+        };
         this.msgs.push(result);
         this.$refs.input.value = '';
         console.log(this.msgs);
+        this.newMessage(this.againstId,result);
         this.$nextTick(() => {
           msgslist.scrollTop = msgslist.scrollHeight;
         });
+      },
+      newMessage (againstId,sendMsg) {
+        if (!!againstId) {
+          this.$socket.emit('sendMsg', {againstId: againstId, msg: sendMsg});
+        }
       },
     },
   };

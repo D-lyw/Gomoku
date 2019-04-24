@@ -52,7 +52,6 @@
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: bisque;
     .row {
       width: 100%;
       height: 7.15%;
@@ -64,6 +63,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        background-color: bisque;
         span {
           display: inline-block;
           width: 90%;
