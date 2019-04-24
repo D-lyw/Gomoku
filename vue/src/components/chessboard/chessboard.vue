@@ -11,8 +11,10 @@
 </template>
 
 <script>
+import isWin from '../../utils/isWin'
 export default {
   name: "chess-board",
+  props: ['myTurn', 'againstId', 'myColor', 'coordinate'],
   data() {
     return {
       map: [
@@ -35,13 +37,29 @@ export default {
   },
   methods: {
     doChess(row, col) {
-      if(this.map[row][col] === 0) {
-        this.$set(this.map[row], col, 1)
+      console.log(this.myTurn)
+      if(this.myTurn) {
+        if(this.map[row][col] === 0) {
+          this.$set(this.map[row], col, this.myColor)
+        }
+        // 先判断是否胜利
+        var ifWin = isWin(this.map, row, col)
+        var x = row
+        var y = col
+        var sendObj = {
+            againstId: this.againstId,
+            coordinate: [x, y],
+            isWin: ifWin,
+            myTurn: true
+        }
+        this.$socket.emit('chess', sendObj)
       }
     }
   },
-  mounted() {
-    
+  watch: {
+    coordinate: function() {
+      this.$set(this.map[this.coordinate[0]], this.coordinate[1], this.myColor*-1)
+    }
   }
 };
 </script>

@@ -7,7 +7,7 @@
         <chessbtns></chessbtns>
       </div>
       <div class="game-mid">
-        <chessboard></chessboard>
+        <chessboard :myTurn="myTurn" :againstId="againstId" :myColor="myColor" :coordinate="coordinate"></chessboard>
       </div>
       <div class="game-right">
         <avatar></avatar>
@@ -15,6 +15,7 @@
         <cheatpanel></cheatpanel>
       </div>
     </div>
+    <button @click="startGame">开始游戏</button>
   </div>
 </template>
 
@@ -24,7 +25,6 @@
   import chessbtns from '../../components/chessbtns/chessbtns';
   import timer from '../../components/timer/timer';
   import cheatpanel from '../../components/cheatpanel/cheatpanel';
-  import Bus from '../../bus/bus'
   export default {
     name: 'home',
     components: {
@@ -42,79 +42,78 @@
         sendMsg: '',
         againstId: '',
         againstName: '',
-        myTurn: false,
-        reciveMsg: ''
+        myTurn: true,
+        reciveMsg: '',
+        myColor: -1
       }
     },
     mounted() {
-      Bus.$on('routeChange', username => {
-        this.username = username
-        console.log(this.username)
-      })
-      this.$socket.on('chessResponse', (res) => {
-        if(!res.isLose) {
-          this.coordinate = res.coordinate
-          this.myTurn = res.myTurn
-          // 画一颗棋子
-        }
-      })
-      this.$socket.on('recvMsg', (msg) => {
-        this.reciveMsg = msg.msg
-      })
-      this.$socket.on('changeTurn', (res) => {
-        this.myTurn = res.myTurn
-      })
+      this.username = this.$route.params.username
       this.$socket.emit('connect')
-      this.$socket.emit('newUserName', {username: this.username})
+      window.onbeforeunload  = (e) => {
+        console.log(this.username)
+        localStorage.removeItem(this.username)
+        console.log(111)
+        return true
+      }
+      var token = localStorage.getItem(this.username)
+      if(!token) {
+        this.$router.push('login')
+      }
     },
     sockets: {
       connect () {
         this.userId = this.$socket.id
-        // this.$socket.emit('newUserName', {username: this.username})
+        console.log(this.username + '----connected')
+        this.$socket.emit('newUserName', {userName: this.username})
+      },
+      chessResponse (data) {
+        this.coordinate = data.coordinate
+        this.myTurn = data.myTurn
+        if (!data.isLose) {
+          // 重新计时，画对手棋子
+          console.log(this.coordinate)
+        } else {
+          console.log('你输了')
+        }
+      },
+      reciveMsg (data) {
+        this.reciveMsg = data.msg
+      },
+      changeTurn (data) {
+        this.myTurn = data.myTurn
+      },
+      startGameResponse (data) {
+        if(data.status == 0){
+          // 匹配成功
+          console.log('匹配成功')
+          this.againstId = data.againstId
+          this.againstName = data.againstName
+          this.myTurn = data.myTurn
+          this.myColor = this.myTurn ? -1 : 1
+          if(this.myTurn) {
+            console.log('你是先手')
+          } else {
+            console.log('你是后手')
+          }
+        } else {
+          // 匹配失败
+          // 显示信息
+          console.log('匹配失败')
+        }
       }
     },
     methods: {
-      clientClick() { // againstId 下棋的坐标
-        if(this.myTurn) {
-          // 先判断是否胜利
-          // var isWin = /*判断胜利*/
-            var sendObj = {
-                againstId: this.againstId,
-                coordinate: [],
-                isWin: isWin,
-                myTurn: true
-            }
-          this.$socket.emit('chess', sendObj)
-
-        }
-      },
       startGame() {
-        this.$socket.emit('startGame', {username: this.username, id: this.userId})
-        this.$socket.on('startGameResponse', (msg) => {
-          if(msg.status == 0){
-            // 匹配成功
-            this.againstId = msg.againstId
-            this.againstName = msg.againstName
-            this.myTurn = msg.myTurn
-          } else {
-            // 匹配失败
-            // 显示信息
-          }
-        })
+        this.$socket.emit('startGame', {userName: this.username, id: this.userId})
       },
       newMessage() {
         if(!this.againstId) {
           this.$socket.emit('sendMsg', { againstId: this.againstId, msg: this.sendMsg})
         }
       }
-    },
-    // beforeRouteEnter (to, from, next) {
-    //     next(vm => {
-    //       vm.username = vm.$route.params.username
-    //       console.log(vm.$route.params.username)
-    //       console.log(vm.username)
-    //     })
-    // }
+    }
+
   };
 </script>
 
