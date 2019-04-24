@@ -62,7 +62,7 @@ io.on('connection', (socket) => {
             socket.to(result).emit('startGameResponse', {status: 0, againstId: socket.id, againstName: socketList[socket.id].name, myTurn: false});
             socket.emit('startGameResponse', {status: 0, againstId: result, againstName: socketList[result].name, myTurn: true});
             
-            console.log(`用户 ${socketList[socket.id].name} 和 用户 ${socketList[socket.id].name} 游戏匹配成功....\n`);
+            console.log(`用户 ${socketList[socket.id].name} 和 用户 ${socketList[result].name} 游戏匹配成功....\n`);
         }).catch(() => {
             if(socketList[socket.id].status == 1){
                 socket.emit('startGameResponse', {status: 1});              // 匹配失败, 告诉发起方, 匹配失败信息;
