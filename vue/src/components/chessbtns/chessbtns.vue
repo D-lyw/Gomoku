@@ -1,14 +1,26 @@
 <template>
   <div id="chessBtn">
-    <div class="chessbtn">悔棋</div>
+    <div class="chessbtn" @click="hanleRegret">悔棋</div>
     <div class="chessbtn">和棋</div>
-    <div class="chessbtn">认输</div>
+    <div class="chessbtn" @click="handleGiveUp">认输</div>
   </div>
 </template>
 
 <script>
   export default {
     name: 'chess-btns',
+    methods: {
+      handleGiveUp () {
+        var res = confirm('这就要放弃了吗？')
+        if(res) {
+          this.$socket.emit('accident', {status: 1})
+          this.$emit('btnClick')
+        }
+      },
+      hanleRegret () {
+        this.$socket.emit('accident', {status: 2})
+      }
+    },
   };
 </script>
 

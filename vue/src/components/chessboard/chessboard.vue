@@ -57,7 +57,6 @@
                 this.showStart = !this.showStart;
                 this.$root.Bus.$emit('chessNum', 0);
                 this.$root.Bus.$emit('againstChessNum', 0);
-                // that.$root.Bus.$emit('timerStart');
                 that.$root.Bus.$emit('againstTimerStart');
               }, 0);
             }
@@ -70,7 +69,6 @@
               myTurn: true,
             };
             that.$socket.emit('chess', sendObj);
-
           }
         }
       },
@@ -109,7 +107,6 @@
             that.$root.Bus.$emit('chessNum', 0);
             that.$root.Bus.$emit('againstChessNum', 0);
             that.$root.Bus.$emit('timerStart');
-            // that.$root.Bus.$emit('againstTimerStart');
             that.showStart = !this.showStart;
           }, 0);
         }

@@ -23,9 +23,9 @@
           class="userinput"
           ref="input"
           @keyup.enter="submit"
-
-          placeholder="输入你要发送的消息">
-        <button @click="submit" class="submit">发送</button>
+          :disabled='inputDisabled'
+          placeholder="匹配对手后可进行聊天">
+        <button :disabled='inputDisabled' @click="submit" class="submit">发送</button>
       </div>
     </div>
   </div>
@@ -39,6 +39,7 @@
         msgs: [],
         sendMsg: '',
         reciveMsg: '',
+        inputDisabled:true
       };
     },
     props: ['againstId', 'username', 'againstName'],
@@ -78,6 +79,17 @@
         });
       },
     },
+    watch:{
+      againstId:function () {
+        if(this.againstId===0 || this.againstId){
+          this.inputDisabled=false;
+          this.$refs.input.placeholder="输入你要发送的消息";
+        }else{
+          this.inputDisabled=true;
+          this.$refs.input.placeholder="匹配对手后可进行聊天";
+        }
+      }
+    }
   };
 </script>
 

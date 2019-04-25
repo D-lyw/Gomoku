@@ -10,13 +10,13 @@
           <timer :timerStart="timerStart" />
         </div>
         <div class="chessbtns">
-          <chessbtns />
+          <chessbtns @btnClick="resetStatus" />
         </div>
       </div>
       <div class="game-mid">
         <!--<barrage></barrage>-->
         <chessboard :myTurn="myTurn" :againstId="againstId" :myColor="myColor" :coordinate="coordinate"
-                    :isLose="isLose" :username="username" :userId="userId" />
+                    :isLose="isLose" :username="username" :userId="userId" ref="chessboard" />
       </div>
       <div class="game-right">
         <div class="avatar">
@@ -87,8 +87,8 @@
     created () {
       let that = this;
       this.$root.Bus.$on('chessNum', function (arg) {
-        if(arg!==undefined && typeof arg !=='number') return;
-        if (arguments.length>0) {
+        if (arg !== undefined && typeof arg !== 'number') return;
+        if (arguments.length > 0) {
           that.chessNum = arg;
         } else {
           that.chessNum += 1;
@@ -96,8 +96,8 @@
       });
 
       this.$root.Bus.$on('againstChessNum', function (arg) {
-        if(arg!==undefined && typeof arg !=='number') return;
-        if (arguments.length>0) {
+        if (arg !== undefined && typeof arg !== 'number') return;
+        if (arguments.length > 0) {
           that.againstChessNum = arg;
         } else {
           that.againstChessNum += 1;
@@ -149,11 +149,50 @@
         } else {
           // 匹配失败
           // 显示信息
-          console.log('匹配失败');
+          alert('匹配失败, 请重新开始匹配');
+          this.$refs.chessboard.showStart = true;
+        }
+      },
+      accident (data) {
+        switch (data.status) { // 0对方掉线 1对方认输 2对方申请悔棋
+          case 0:
+            alert('对方掉线，你赢了');
+            this.initChessNum();
+            this.resetStatus();
+            break;
+          case 1:
+            alert('对方认输，你赢了');
+            this.initChessNum();
+            this.resetStatus();
+            break;
+          case 2:
+            var res = confirm('对方申请悔棋，是否让他一步？');
+            this.$socket.emit('repentRespose', {isAgree: res});
+            break;
+          default:
+            break;
+        }
+      },
+      reciveRepentResult (data) {
+        if (data.isAgree) {
+          alert('对方同意了你的悔棋请求');
+        } else {
+          alert('对方无情地拒绝了你的悔棋请求');
         }
       },
     },
-    methods: {},
+    methods: {
+      resetStatus () {
+        this.$refs.chessboard.showStart = true;
+        this.againstId = '';
+        this.againstName = '';
+        this.myTurn = false;
+      },
+      initChessNum(){
+        this.$root.Bus.$emit('chessNum', 0);
+        this.$root.Bus.$emit('againstChessNum', 0);
+      }
+    },
   };
 </script>
 
