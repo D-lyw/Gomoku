@@ -1,18 +1,29 @@
 <template>
   <div id="counter">
     <img src="../../../static/img/chessnum.png" class="clockname" />
-    <div class="clock">20</div>
+    <div class="clock">{{chessNum}}</div>
   </div>
 </template>
 
 <script>
   export default {
     name: 'counter',
+    data () {
+      return {};
+    },
+    props: {
+      chessNum: {
+        type: Number,
+      },
+    },
+    mounted () {
+    },
+    watch: {},
   };
 </script>
 
 <style scoped lang="scss">
-  #counter{
+  #counter {
     display: flex;
     flex-direction: row;
     align-items: center;

@@ -7,8 +7,8 @@ import VueSocketio from 'vue-socket.io'
 import socketio from 'socket.io-client'
 
 Vue.use(new VueSocketio({
-  connection: socketio('http://39.108.10.155:8080')
-  // connection: socketio('http://localhost:8000')
+  // connection: socketio('http://39.108.10.155:8080')
+  connection: socketio('http://localhost:8000')
 }))
 Vue.config.productionTip = false
 
@@ -17,6 +17,9 @@ new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  data: {
+    Bus: new Vue(),
+  },
 })
 
