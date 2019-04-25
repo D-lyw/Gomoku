@@ -5,14 +5,9 @@
 </template>
 
 <script>
-  import home from './components/home/home';
-
-  export default {
-    name: 'App',
-    components: {
-      home,
-    },
-  };
+export default {
+  name: 'App'
+};
 </script>
 
 <style>

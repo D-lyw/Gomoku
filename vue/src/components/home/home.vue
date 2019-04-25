@@ -9,13 +9,13 @@
           <timer></timer>
         </div>
         <div class="chessbtns">
-          <chessbtns></chessbtns>
+          <chessbtns @btnClick="resetStatus"></chessbtns>
         </div>
       </div>
       <div class="game-mid">
         <!--<barrage></barrage>-->
         <chessboard :myTurn="myTurn" :againstId="againstId" :myColor="myColor" :coordinate="coordinate"
-                    :isLose="isLose" :username="username" :userId="userId"></chessboard>
+                    :isLose="isLose" :username="username" :userId="userId" ref="chessboard"></chessboard>
       </div>
       <div class="game-right">
         <div class="avatar">
@@ -103,22 +103,50 @@
           this.myTurn = data.myTurn;
           this.myColor = this.myTurn ? -1 : 1;
           if (this.myTurn) {
-            console.log('你是先手');
+            alert('你是先手');
           } else {
-            console.log('你是后手');
+            alert('你是后手');
           }
         } else {
           // 匹配失败
           // 显示信息
-          console.log('匹配失败');
+          alert('匹配失败, 请重新开始匹配');
+          this.$refs.chessboard.showStart = true
         }
       },
+      accident (data) {
+        switch (data.status) { // 0对方掉线 1对方认输 2对方申请悔棋
+          case 0:
+            alert('对方掉线，你赢了')
+            this.resetStatus()
+            break;
+          case 1:
+            alert('对方认输，你赢了')
+            this.resetStatus()
+            break;
+          case 2:
+            var res = confirm('对方申请悔棋，是否让他一步？')
+            this.$socket.emit('repentRespose', {isAgree: res})
+            break;
+          default:
+            break;
+        }
+      },
+      reciveRepentResult (data) {
+        if(data.isAgree) {
+          alert('对方同意了你的悔棋请求')
+        } else {
+          alert('对方无情地拒绝了你的悔棋请求')
+        }
+      }
     },
     methods: {
-      // startGame () {
-      //   this.showStart = !this.showStart;
-      //   this.$socket.emit('startGame', {userName: this.username, id: this.userId});
-      // },
+      resetStatus () {
+        this.$refs.chessboard.showStart = true
+        this.againstId = ''
+        this.againstName = ''
+        this.myTurn = false
+      }
     },
   };
 </script>

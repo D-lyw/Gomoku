@@ -62,7 +62,6 @@
               myTurn: true,
             };
             this.$socket.emit('chess', sendObj);
-
           }
         }
       },
