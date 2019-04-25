@@ -19,7 +19,7 @@ io.on('connection', (socket) => {
         name: ''                // 该用户的名称
     }
 
-    // 第一步首先获取 新用户的昵称; 格式 {userName: "Tom"}
+    // 第一步首先获取 新用户的昵称; 格式 {userName: "Tom"} 
     socket.on('newUserName', (msg) => {
 
         console.log("newUser coming --- " + msg.userName + "\n");
@@ -69,7 +69,7 @@ io.on('connection', (socket) => {
                 socket.emit('startGameResponse', {status: 1});              // 匹配失败, 告诉发起方, 匹配失败信息;
                 matching = matching.filter((item) => {
                     return item != socket.id;
-                })
+                })  
             }
             console.log(`用户 ${socketList[socket.id].name} 尝试匹配 失败 !!!! \n`);
         })
@@ -116,9 +116,10 @@ io.on('connection', (socket) => {
             util.resetStatus(socketList, socket.id, socketList[socket.id].opponent);
         }
         if(msg.status == 2){
-            socket.to(socketList[socket.id].opponent).emit('accident', {status: 2});
+            socket.to(socketList[socket.id].opponent).emit('accidentClient', {status: 2});
             socket.on('repentRespose', (msg) =>　{      // msg格式　｛ isAgree: false }
-                socket.to(socketList[socket.id].opponent).emit('reciveRepentResult', { isAgree: msg.isAgree });
+                console.log("悔棋，　对方返回消息！");
+                socket.emit('reciveRepentResult', { isAgree: msg.isAgree });
             })
         }
     })
