@@ -40,17 +40,24 @@
     },
     methods: {
       doChess (row, col) {
+        let that = this;
         console.log(this.myTurn);
         if (this.myTurn) {
           if (this.map[row][col] === 0) {
 
             this.$set(this.map[row], col, this.myColor);
-            // 先判断是否胜利
+            that.$root.Bus.$emit('chessNum');
+            that.$root.Bus.$emit('timerStart');
+            that.$root.Bus.$emit('againstTimerStart');
+            // 判断是否胜利
             var ifWin = isWin(this.map, row, col);
             if (ifWin) {
               setTimeout(() => {
                 alert('你赢了');
                 this.showStart = !this.showStart;
+                this.$root.Bus.$emit('chessNum', 0);
+                this.$root.Bus.$emit('againstChessNum', 0);
+                that.$root.Bus.$emit('againstTimerStart');
               }, 0);
             }
             var x = row;
@@ -61,8 +68,7 @@
               isWin: ifWin,
               myTurn: true,
             };
-            this.$socket.emit('chess', sendObj);
-
+            that.$socket.emit('chess', sendObj);
           }
         }
       },
@@ -89,11 +95,19 @@
     },
     watch: {
       coordinate: function () {
+        let that = this;
         this.$set(this.map[this.coordinate[0]], this.coordinate[1], this.myColor * -1);
+        this.$root.Bus.$emit('againstChessNum');
+        this.$root.Bus.$emit('timerStart');
+        this.$root.Bus.$emit('againstTimerStart');
+        console.log(this.isLose);
         if (this.isLose) {
           setTimeout(() => {
             alert('你输了');
-            this.showStart = !this.showStart;
+            that.$root.Bus.$emit('chessNum', 0);
+            that.$root.Bus.$emit('againstChessNum', 0);
+            that.$root.Bus.$emit('timerStart');
+            that.showStart = !this.showStart;
           }, 0);
         }
       },

@@ -5,6 +5,15 @@ var io = require('socket.io')(http);
 var match = require('./matchOpponent');
 var util = require('./util');
 
+
+// 路由部分
+var router = require('./router/index');
+var app = express();
+app.use(router);
+
+//监听端口
+app.listen(8000);
+
 // 每个用户socketId
 var socketList = {};
 // 正在请求匹配的集合
