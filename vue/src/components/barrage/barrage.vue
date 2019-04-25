@@ -56,6 +56,7 @@
         /*width: 200px;*/
         /*white-space: nowrap;*/
         /*overflow: hidden;*/
+        /*word-break: break-all;*/
         /*text-overflow: ellipsis;*/
       }
     }

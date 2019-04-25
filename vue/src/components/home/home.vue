@@ -3,7 +3,7 @@
     <div class="container">
       <div class="game-left">
         <div class="avatar">
-          <avatar></avatar>
+          <avatar :username="username"></avatar>
         </div>
         <div class="timer">
           <timer></timer>
@@ -15,18 +15,17 @@
       <div class="game-mid">
         <!--<barrage></barrage>-->
         <chessboard :myTurn="myTurn" :againstId="againstId" :myColor="myColor" :coordinate="coordinate"
-                    :map="map"></chessboard>
-        <div v-if="showStart" @click="startGame" class="startgame">开始游戏</div>
+                    :isLose="isLose" :username="username" :userId="userId"></chessboard>
       </div>
       <div class="game-right">
         <div class="avatar">
-          <avatar></avatar>
+          <avatar :username="againstName"></avatar>
         </div>
         <div class="timer">
           <timer></timer>
         </div>
         <div class="msgslist">
-          <msgslist ></msgslist>
+          <msgslist :againstId="againstId" :againstName="againstName" :username="username"></msgslist>
         </div>
       </div>
     </div>
@@ -56,29 +55,11 @@
         userId: '',
         coordinate: [],
         username: '',
-        sendMsg: '',
         againstId: '',
         againstName: '',
-        myTurn: true,
-        reciveMsg: '',
+        myTurn: false,
         myColor: -1,
-        showStart: true,
-        map: [
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        ],
+        isLose: false,
       };
     },
     mounted () {
@@ -104,38 +85,17 @@
       chessResponse (data) {
         this.coordinate = data.coordinate;
         this.myTurn = data.myTurn;
+        this.isLose = data.isLose;
         if (!data.isLose) {
           // 重新计时，画对手棋子
           console.log(this.coordinate);
-        } else {
-          this.showStart=!this.showStart;
-          var res = confirm('你输了');
-          this.map = [
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          ];
         }
-      },
-      reciveMsg (data) {
-        this.reciveMsg = data.msg;
       },
       changeTurn (data) {
         this.myTurn = data.myTurn;
       },
       startGameResponse (data) {
-        if (data.status == 0) {
+        if (data.status === 0) {
           // 匹配成功
           console.log('匹配成功');
           this.againstId = data.againstId;
@@ -155,15 +115,26 @@
       },
     },
     methods: {
-      startGame () {
-        this.showStart=!this.showStart;
-        this.$socket.emit('startGame', {userName: this.username, id: this.userId});
-      },
-      newMessage () {
-        if (!this.againstId) {
-          this.$socket.emit('sendMsg', {againstId: this.againstId, msg: this.sendMsg});
+      countTime: function () {
+        //获取当前时间
+        var date = new Date();
+        var now = date.getTime();
+        //设置截止时间
+        var endDate = new Date("2018-10-22 23:23:23");
+        var end = endDate.getTime();
+        //时间差
+        var leftTime = end - now;
+        //定义变量 d,h,m,s保存倒计时的时间
+        if (leftTime >= 0) {
+          d = Math.floor(leftTime / 1000 / 60 / 60 / 24);
+          this.h = Math.floor(leftTime / 1000 / 60 / 60 % 24);
+          this.m = Math.floor(leftTime / 1000 / 60 % 60);
+          this.s = Math.floor(leftTime / 1000 % 60);
         }
-      },
+        console.log(this.s);
+        //递归每秒调用countTime方法，显示动态时间效果
+        setTimeout(this.countTime, 1000);
+      }
     },
   };
 </script>
@@ -174,53 +145,44 @@
       display: flex;
       flex-direction: row;
       justify-content: center;
+
       .game-left {
         width: 280px;
         .avatar {
+          display: flex;
+          justify-content: center;
           margin-top: 10px;
         }
         .timer {
+          display: flex;
           margin-top: 50px;
+          justify-content: center;
         }
         .chessbtns {
           margin-top: 50px;
         }
       }
       .game-mid {
-        position: relative;
         width: 600px;
         height: 580px;
         margin-top: 10px;
-        border: 1px solid black;
-        .startgame {
-          position: absolute;
-          top: 60%;
-          left: 50%;
-          transform: translateX(-50%);
-          font-size: 22px;
-          box-sizing: border-box;
-          background-color: #d06e34;
-          width: 120px;
-          height: 40px;
-          border-radius: 3px;
-          color: white;
-          text-align: center;
-          font-weight: bold;
-          border: 3px solid #d06e34;
-          border-bottom-color: #bb5b22;
-          text-shadow: .1em .1em 0 #a5501e;
-          cursor: pointer;
-        }
       }
       .game-right {
         width: 280px;
+        position: relative;
         .avatar {
+          display: flex;
           margin-top: 10px;
+          justify-content: center;
         }
         .timer {
+          display: flex;
           margin-top: 50px;
+          justify-content: center;
         }
         .msgslist {
+          position: absolute;
+          bottom: 0;
           margin-left: 20px;
         }
       }
