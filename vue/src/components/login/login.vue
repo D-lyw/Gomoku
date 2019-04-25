@@ -7,7 +7,7 @@
     <input type="text" class="login-input" placeholder="User Name" v-model="username">
     <div class="btn-group">
       <button type="submit" class="login-btn" @click="doSubmit">登 录</button>
-      <button class="regist-btn" @click="handleRegist">注 册</button>
+      <!-- <button class="regist-btn" @click="handleRegist">注 册</button> -->
     </div>
   </form>
 </template>
@@ -30,22 +30,33 @@
     methods: {
       doSubmit (e) {
         e.preventDefault();
-        if (this.validate()) {
-          axios({
-            methods: 'post',
-            url: '',
-            data: {
-              username: this.username,
-            },
-          }).then(res => {
-            // this.userToken = res.data
+        // if (this.validate()) {
+        //   axios({
+        //     methods: 'post',
+        //     url: '',
+        //     data: {
+        //       username: this.username,
+        //     },
+        //   }).then(res => {
+        //     // this.userToken = res.data
+        //     localStorage.setItem(this.username, this.username);
+        //     this.$router.push({name: 'home', params: {username: this.username}});
+        //   }).catch(error => {
+        //     alert('用户名错误');
+        //     console.log(error);
+        //   });
+        // }
+        axios.post('http://120.78.156.5:8080/login' ,{username: this.username})
+          .then((res) => {
+            if(res.status != true){
+              console.log(res);
+            }
             localStorage.setItem(this.username, this.username);
             this.$router.push({name: 'home', params: {username: this.username}});
-          }).catch(error => {
-            alert('用户名错误');
-            console.log(error);
-          });
-        }
+          })
+          .catch((res) => {
+            console.log(res);
+          })
       },
       validate () {
         if (!this.username.trim()) {
@@ -103,7 +114,7 @@
   .login-btn, .regist-btn {
     margin-right: 24px;
     display: inline-block;
-    width: 200px;
+    width: 425px;
     font-size: 20px;
     height: 40px;
     color: #fff;

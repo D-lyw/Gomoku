@@ -1,18 +1,23 @@
-var express = require('express');
-var http = require('http').createServer();
+var app = require('express')();
+var http = require('http').Server(app);
 var io = require('socket.io')(http);
+
+var cors = require('cors')
 
 var match = require('./matchOpponent');
 var util = require('./util');
 
+http.listen('8080', () =>  { 
+    console.log("listening 8080.........")
+})
 
-// 路由部分
+app.use(cors());
+
+//路由部分
 var router = require('./router/index');
-var app = express();
 app.use(router);
 
-//监听端口
-app.listen(8000);
+
 
 // 每个用户socketId
 var socketList = {};
@@ -156,16 +161,3 @@ io.on('connection', (socket) => {
         console.log(`当前在线用户共 ${Object.keys(socketList).length} 人\n\n`);
     })
 })
-
-http.listen('8080', function(){
-    console.log("Listening 8080....")
-})
-
-
-
-/**
-前端
-
-
-
- */
