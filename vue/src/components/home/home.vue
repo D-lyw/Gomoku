@@ -25,7 +25,7 @@
           <timer></timer>
         </div>
         <div class="msgslist">
-          <msgslist :reciveMsg="reciveMsg" :againstId="againstId"></msgslist>
+          <msgslist :againstId="againstId" :againstName="againstName" :username="username"></msgslist>
         </div>
       </div>
     </div>
@@ -55,11 +55,9 @@
         userId: '',
         coordinate: [],
         username: '',
-        // sendMsg: '',
         againstId: '',
         againstName: '',
         myTurn: false,
-        reciveMsg: '',
         myColor: -1,
         isLose: false,
       };
@@ -93,9 +91,6 @@
           console.log(this.coordinate);
         }
       },
-      reciveMsg (data) {
-        this.reciveMsg = data.msg;
-      },
       changeTurn (data) {
         this.myTurn = data.myTurn;
       },
@@ -120,10 +115,6 @@
       },
     },
     methods: {
-      startGame () {
-        this.showStart = !this.showStart;
-        this.$socket.emit('startGame', {userName: this.username, id: this.userId});
-      },
       countTime: function () {
         //获取当前时间
         var date = new Date();

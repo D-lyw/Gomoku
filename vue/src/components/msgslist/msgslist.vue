@@ -37,54 +37,44 @@
       return {
         msgs: [],
         sendMsg: '',
+        reciveMsg: '',
       };
     },
-    props: {
-      reciveMsg: {
-        type: String,
-      },
-    },
-    watch: {
-      reciveMsg: function (val) {
-        this.msgs.push(val);
-        console.log(this.msgs);
-        this.$nextTick(() => {
-          msgslist.scrollTop = msgslist.scrollHeight;
-        });
-      },
-    },
-    mounted () {
-      // this.$nextTick(() => {
-      //   msgslist.scrollTop = msgslist.scrollHeight;
-      // });
-    },
+    props: ['againstId', 'username', 'againstName'],
     sockets: {
-      reciveMsg (data) {
+      recvMsg (data) {
         this.reciveMsg = data.msg;
+        console.log(this.reciveMsg);
+        this.msgs.push({
+          username: this.againstName,
+          cont: this.reciveMsg,
+          type: 'receive',
+        });
+        this.scrollToBottom();
       },
     },
     methods: {
       submit () {
-        var result = this.$refs.input.value;
-        var msgslist = this.$refs.msgslist;
-        if (!result) return;
-        result = {
-          'username': '李四',
-          'cont': result,
-          'type': 'send',
-        };
-        this.msgs.push(result);
+        var sendMsg = this.$refs.input.value;
+        if (!sendMsg || !this.againstId) return;
+        this.msgs.push({
+          username: this.username,
+          cont: sendMsg,
+          type: 'send',
+        });
+        this.scrollToBottom();
         this.$refs.input.value = '';
         console.log(this.msgs);
-        this.newMessage(this.againstId,result);
+        this.newMessage(this.againstId, sendMsg);
+      },
+      newMessage (againstId, sendMsg) {
+        this.$socket.emit('sendMsg', {againstId: againstId, msg: sendMsg});
+      },
+      scrollToBottom () {
+        var msgslist = this.$refs.msgslist;
         this.$nextTick(() => {
           msgslist.scrollTop = msgslist.scrollHeight;
         });
-      },
-      newMessage (againstId,sendMsg) {
-        if (!!againstId) {
-          this.$socket.emit('sendMsg', {againstId: againstId, msg: sendMsg});
-        }
       },
     },
   };
