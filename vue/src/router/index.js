@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import home from '../components/home/home'
 import login from '../components/login/login'
-
+import rank from '../components/rank/rank.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -20,6 +20,11 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: login
+    },
+    {
+      path: '/rank',
+      name: 'rank',
+      component: rank
     }
   ],
   // beforeEach: (to, from, next) => {
