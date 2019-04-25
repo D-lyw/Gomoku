@@ -37,20 +37,20 @@
       return {
         msgs: [],
         sendMsg: '',
-        reciveMsg: ''
+        reciveMsg: '',
       };
     },
-    props: ['againstId','username','againstName'],
+    props: ['againstId', 'username', 'againstName'],
     sockets: {
       recvMsg (data) {
-        this.reciveMsg = data.msg
-        console.log(this.reciveMsg)
+        this.reciveMsg = data.msg;
+        console.log(this.reciveMsg);
         this.msgs.push({
           username: this.againstName,
           cont: this.reciveMsg,
-          type: 'receive'
-        })
-        this.scrollToBottom()
+          type: 'receive',
+        });
+        this.scrollToBottom();
       },
     },
     methods: {
@@ -60,9 +60,9 @@
         this.msgs.push({
           username: this.username,
           cont: sendMsg,
-          type: 'send'
+          type: 'send',
         });
-        this.scrollToBottom()
+        this.scrollToBottom();
         this.$refs.input.value = '';
         console.log(this.msgs);
         this.newMessage(this.againstId, sendMsg);
@@ -75,7 +75,7 @@
         this.$nextTick(() => {
           msgslist.scrollTop = msgslist.scrollHeight;
         });
-      }
+      },
     },
   };
 </script>

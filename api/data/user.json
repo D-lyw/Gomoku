@@ -1,8 +1,1 @@
-{
-    "registerUser": [
-        "abc",
-        "小明",
-        "明天",
-        "D-lyw"
-    ]
-}
+{"registerUser":[{"name":"abc","winTime":12},{"name":"小明","winTime":3},{"name":"aaa","winTime":1},{"name":"D-lyw","winTime":0},{"name":"abcdddd","winTime":0}]}

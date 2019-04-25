@@ -5,6 +5,15 @@ var io = require('socket.io')(http);
 var match = require('./matchOpponent');
 var util = require('./util');
 
+
+// 路由部分
+var router = require('./router/index');
+var app = express();
+app.use(router);
+
+//监听端口
+app.listen(8000);
+
 // 每个用户socketId
 var socketList = {};
 // 正在请求匹配的集合
@@ -58,11 +67,12 @@ io.on('connection', (socket) => {
                 return item != socket.id && item != result;
             })
 
+            var myTurn = socket.id > result;
             // 告诉双方匹配成功
-            socket.to(result).emit('startGameResponse', {status: 0, againstId: socket.id, againstName: socketList[socket.id].name, myTurn: false});
-            socket.emit('startGameResponse', {status: 0, againstId: result, againstName: socketList[result].name, myTurn: true});
+            socket.to(result).emit('startGameResponse', {status: 0, againstId: socket.id, againstName: socketList[socket.id].name, myTurn: myTurn});
+            //socket.emit('startGameResponse', {status: 0, againstId: result, againstName: socketList[result].name, myTurn: true});
             
-            console.log(`用户 ${socketList[socket.id].name} 和 用户 ${socketList[socket.id].name} 游戏匹配成功....\n`);
+            console.log(`用户 ${socketList[socket.id].name} 和 用户 ${socketList[result].name} 游戏匹配成功....\n`);
         }).catch(() => {
             if(socketList[socket.id].status == 1){
                 socket.emit('startGameResponse', {status: 1});              // 匹配失败, 告诉发起方, 匹配失败信息;
@@ -86,6 +96,10 @@ io.on('connection', (socket) => {
         }else{
             // 通知输掉的一方
             socket.to(msg.againstId).emit('chessResponse', {againstId: msg.againstId, myTurn: false, isWin: false, isLose: true, coordinate: msg.coordinate});
+            socket.emit('changeTurn', { myTurn: false})
+            
+            // 显示该回合结束信息
+            console.log(`${socketList[msg.againstId].name} 和　${socketList[socket.id]}　本回合结束，　${socketList[socket.id]} 胜利！\n`);
 
             // 重置双方的游戏状态
             util.resetStatus(socketList, socket.id, msg.againstId);
