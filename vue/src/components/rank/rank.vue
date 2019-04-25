@@ -54,6 +54,7 @@
 
 <script>
 import axios from "axios"
+
 export default {
   data() {
     return {
@@ -64,13 +65,13 @@ export default {
 
   },
   mounted() {
-    // axios.post('localhost:8081/getTop10')
-    //   .then(function (response) {
-    //     console.log(response);
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
+    axios.post('http://39.108.10.155:8080/getTop10')
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 }
 </script>

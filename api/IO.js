@@ -1,5 +1,5 @@
 var express = require('express');
-var http = require('http').createServer(express);
+var http = require('http').createServer();
 var io = require('socket.io')(http);
 
 var match = require('./matchOpponent');
@@ -156,9 +156,6 @@ io.on('connection', (socket) => {
         console.log(`当前在线用户共 ${Object.keys(socketList).length} 人\n\n`);
     })
 })
-
-
-
 
 http.listen('8080', function(){
     console.log("Listening 8080....")
