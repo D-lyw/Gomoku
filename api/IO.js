@@ -89,6 +89,9 @@ io.on('connection', (socket) => {
             socket.to(msg.againstId).emit('chessResponse', {againstId: msg.againstId, myTurn: false, isWin: false, isLose: true, coordinate: msg.coordinate});
             socket.emit('changeTurn', { myTurn: false})
             
+            // 显示该回合结束信息
+            console.log(`${socketList[msg.againstId].name} 和　${socketList[socket.id]}　本回合结束，　${socketList[socket.id]} 胜利！\n`);
+
             // 重置双方的游戏状态
             util.resetStatus(socketList, socket.id, msg.againstId);
         }
