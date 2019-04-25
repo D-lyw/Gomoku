@@ -1,7 +1,6 @@
 <template>
   <div id="chessBtn">
     <div class="chessbtn" @click="hanleRegret">悔棋</div>
-    <div class="chessbtn">和棋</div>
     <div class="chessbtn" @click="handleGiveUp">认输</div>
   </div>
 </template>

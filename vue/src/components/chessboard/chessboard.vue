@@ -62,6 +62,7 @@
             }
             var x = row;
             var y = col;
+            this.$emit('chessClick', [x, y])
             var sendObj = {
               againstId: this.againstId,
               coordinate: [x, y],
