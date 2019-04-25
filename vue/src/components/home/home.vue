@@ -1,6 +1,15 @@
 <template>
   <div id="home">
     <div class="container">
+    <rank v-if="showRank"></rank>
+    
+    <div :class="showRank? 'rankList hidden' : 'rankList'" @click="showRank = !showRank">
+        <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-rank"></use>
+      </svg>
+      <br>
+      <span class="rank">rank</span>
+    </div>
       <div class="game-left">
         <div class="avatar">
           <avatar :myTurn="myTurn" :username="username" />
@@ -16,7 +25,7 @@
       <div class="game-mid">
         <!--<barrage></barrage>-->
         <chessboard :myTurn="myTurn" :againstId="againstId" :myColor="myColor" :coordinate="coordinate"
-                    :isLose="isLose" :username="username" :userId="userId" ref="chessboard" />
+                    :isLose="isLose" :username="username" :userId="userId" ref="chessboard" @chessClick="handleChessClick"/>
       </div>
       <div class="game-right">
         <div class="avatar">
@@ -42,7 +51,7 @@
   import counter from '../../components/counter/counter';
   import msgslist from '../msgslist/msgslist';
   import barrage from '../barrage/barrage';
-
+  import rank from '../../components/rank/rank'
   export default {
     name: 'home',
     components: {
@@ -53,10 +62,12 @@
       msgslist,
       barrage,
       counter,
+      rank,
     },
     data () {
       return {
         userId: '',
+        myCoordinate: [],
         coordinate: [],
         username: '',
         chessNum: 0,
@@ -68,6 +79,7 @@
         myTurn: false,
         myColor: -1,
         isLose: false,
+        showRank: false
       };
     },
     mounted () {
@@ -141,10 +153,10 @@
           var that = this;
           if (this.myTurn) {
             that.$root.Bus.$emit('timerStart');
-            console.log('你是先手');
+            alert('你是先手');
           } else {
             that.$root.Bus.$emit('againstTimerStart');
-            console.log('你是后手');
+            alert('你是后手');
           }
         } else {
           // 匹配失败
@@ -165,17 +177,25 @@
             this.initChessNum();
             this.resetStatus();
             break;
-          case 2:
-            var res = confirm('对方申请悔棋，是否让他一步？');
-            this.$socket.emit('repentRespose', {isAgree: res});
-            break;
           default:
             break;
         }
       },
+      accidentClient (data) {
+        var res = confirm('对方申请悔棋，是否让他一步？')
+        this.$socket.emit('repentRespose', {isAgree: res})
+        if(res) {
+          console.log(this.coordinate)
+          this.$set(this.$refs.chessboard.map[this.coordinate[0]], this.coordinate[1], 0);
+          this.$root.Bus.$emit('againstChessNum', this.againstChessNum - 1)
+        }
+      },
       reciveRepentResult (data) {
-        if (data.isAgree) {
-          alert('对方同意了你的悔棋请求');
+        if(data.isAgree) {
+          alert('对方同意了你的悔棋请求')
+          console.log(this.myCoordinate)
+          this.$set(this.$refs.chessboard.map[this.myCoordinate[0]], this.myCoordinate[1], 0);
+          this.$root.Bus.$emit('chessNum', this.chessNum - 1)
         } else {
           alert('对方无情地拒绝了你的悔棋请求');
         }
@@ -191,6 +211,9 @@
       initChessNum(){
         this.$root.Bus.$emit('chessNum', 0);
         this.$root.Bus.$emit('againstChessNum', 0);
+      },
+      handleChessClick (arr) {
+        this.myCoordinate = arr
       }
     },
   };
@@ -202,7 +225,21 @@
       display: flex;
       flex-direction: row;
       justify-content: center;
-
+      position: relative;
+      .hidden {
+        opacity: .4;
+      }
+      .rankList {
+        cursor: pointer;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        // writing-mode: vertical-lr;
+        .rank {
+          margin-left: 6px;
+        }
+      }
       .game-left {
         width: 280px;
         .avatar {
