@@ -23,6 +23,7 @@
           class="userinput"
           ref="input"
           @keyup.enter="submit"
+
           placeholder="输入你要发送的消息">
         <button @click="submit" class="submit">发送</button>
       </div>
@@ -92,8 +93,7 @@
     overflow: hidden;
     .main-container {
       height: 250px;
-      overflow-y: auto;
-      width: 280px;
+      overflow-y: scroll;
       .msg-cont-item {
         display: flex;
         flex-direction: row;

@@ -3,29 +3,31 @@
     <div class="container">
       <div class="game-left">
         <div class="avatar">
-          <avatar :username="username"></avatar>
+          <avatar :myTurn="myTurn" :username="username" />
         </div>
         <div class="timer">
-          <timer></timer>
+          <counter :chessNum="chessNum" />
+          <timer :timerStart="timerStart" />
         </div>
         <div class="chessbtns">
-          <chessbtns></chessbtns>
+          <chessbtns />
         </div>
       </div>
       <div class="game-mid">
         <!--<barrage></barrage>-->
         <chessboard :myTurn="myTurn" :againstId="againstId" :myColor="myColor" :coordinate="coordinate"
-                    :isLose="isLose" :username="username" :userId="userId"></chessboard>
+                    :isLose="isLose" :username="username" :userId="userId" />
       </div>
       <div class="game-right">
         <div class="avatar">
-          <avatar :username="againstName"></avatar>
+          <avatar :myTurn="!myTurn" :username="againstName" />
         </div>
         <div class="timer">
-          <timer></timer>
+          <counter :chessNum="againstChessNum" />
+          <timer :timerStart="againstTimerStart" />
         </div>
         <div class="msgslist">
-          <msgslist :againstId="againstId" :againstName="againstName" :username="username"></msgslist>
+          <msgslist :againstId="againstId" :againstName="againstName" :username="username" />
         </div>
       </div>
     </div>
@@ -37,6 +39,7 @@
   import chessboard from '../../components/chessboard/chessboard';
   import chessbtns from '../../components/chessbtns/chessbtns';
   import timer from '../../components/timer/timer';
+  import counter from '../../components/counter/counter';
   import msgslist from '../msgslist/msgslist';
   import barrage from '../barrage/barrage';
 
@@ -49,14 +52,19 @@
       chessbtns,
       msgslist,
       barrage,
+      counter,
     },
     data () {
       return {
         userId: '',
         coordinate: [],
         username: '',
+        chessNum: 0,
         againstId: '',
         againstName: '',
+        againstChessNum: 0,
+        timerStart: false,
+        againstTimerStart: false,
         myTurn: false,
         myColor: -1,
         isLose: false,
@@ -75,6 +83,34 @@
       if (!token) {
         this.$router.push('login');
       }
+    },
+    created () {
+      let that = this;
+      this.$root.Bus.$on('chessNum', function (arg) {
+        if(arg!==undefined && typeof arg !=='number') return;
+        if (arguments.length>0) {
+          that.chessNum = arg;
+        } else {
+          that.chessNum += 1;
+        }
+      });
+
+      this.$root.Bus.$on('againstChessNum', function (arg) {
+        if(arg!==undefined && typeof arg !=='number') return;
+        if (arguments.length>0) {
+          that.againstChessNum = arg;
+        } else {
+          that.againstChessNum += 1;
+        }
+      });
+
+      this.$root.Bus.$on('timerStart', function (arg) {
+        that.timerStart = !that.timerStart;
+      });
+
+      this.$root.Bus.$on('againstTimerStart', function (arg) {
+        that.againstTimerStart = !that.againstTimerStart;
+      });
     },
     sockets: {
       connect () {
@@ -102,9 +138,12 @@
           this.againstName = data.againstName;
           this.myTurn = data.myTurn;
           this.myColor = this.myTurn ? -1 : 1;
+          var that = this;
           if (this.myTurn) {
+            that.$root.Bus.$emit('timerStart');
             console.log('你是先手');
           } else {
+            that.$root.Bus.$emit('againstTimerStart');
             console.log('你是后手');
           }
         } else {
@@ -114,28 +153,7 @@
         }
       },
     },
-    methods: {
-      countTime: function () {
-        //获取当前时间
-        var date = new Date();
-        var now = date.getTime();
-        //设置截止时间
-        var endDate = new Date("2018-10-22 23:23:23");
-        var end = endDate.getTime();
-        //时间差
-        var leftTime = end - now;
-        //定义变量 d,h,m,s保存倒计时的时间
-        if (leftTime >= 0) {
-          d = Math.floor(leftTime / 1000 / 60 / 60 / 24);
-          this.h = Math.floor(leftTime / 1000 / 60 / 60 % 24);
-          this.m = Math.floor(leftTime / 1000 / 60 % 60);
-          this.s = Math.floor(leftTime / 1000 % 60);
-        }
-        console.log(this.s);
-        //递归每秒调用countTime方法，显示动态时间效果
-        setTimeout(this.countTime, 1000);
-      }
-    },
+    methods: {},
   };
 </script>
 
@@ -155,7 +173,8 @@
         }
         .timer {
           display: flex;
-          margin-top: 50px;
+          flex-direction: column;
+          align-items: center;
           justify-content: center;
         }
         .chessbtns {
@@ -177,7 +196,8 @@
         }
         .timer {
           display: flex;
-          margin-top: 50px;
+          flex-direction: column;
+          align-items: center;
           justify-content: center;
         }
         .msgslist {

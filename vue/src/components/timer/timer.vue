@@ -12,7 +12,15 @@
       return {
         seconds: 0,
         minutes: 1,
+        initSeconds: 0,
+        initMinutes: 1,
+        time: null,
       };
+    },
+    props: {
+      timerStart: {
+        type:Boolean
+      },
     },
     methods: {
       num (n) {
@@ -20,22 +28,24 @@
       },
       timer () {
         var _this = this;
-        var time = window.setInterval(function () {
+        this.time = window.setInterval(function () {
           if (_this.seconds === 0 && _this.minutes !== 0) {
             _this.seconds = 59;
             _this.minutes -= 1;
           } else if (_this.minutes === 0 && _this.seconds === 0) {
             _this.seconds = 0;
-            window.clearInterval(time);
+            _this.cancelTimer(_this.time);
           } else {
             _this.seconds -= 1;
           }
         }, 1000);
       },
+      cancelTimer (timer) {
+        window.clearInterval(timer);
+      },
     },
 
     mounted () {
-      this.timer();
     },
     computed: {
       computedSeconds: function () {
@@ -43,6 +53,18 @@
       },
       computedMinutes: function () {
         return this.num(this.minutes);
+      },
+    },
+    watch: {
+      timerStart: function () {
+        if (this.timerStart) {
+          this.seconds = this.initSeconds;
+          this.minutes = this.initMinutes;
+          this.timer();
+        } else {
+          this.cancelTimer(this.time);
+          this.time=null;
+        }
       },
     },
   };
