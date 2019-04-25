@@ -1,36 +1,36 @@
 <template>
   <div id="home">
-    <div class="container">
-      <div class="game-left">
-        <div class="avatar">
-          <avatar :myTurn="myTurn" :username="username" />
-        </div>
-        <div class="timer">
-          <counter :chessNum="chessNum" />
-          <timer :timerStart="timerStart" />
-        </div>
-        <div class="chessbtns">
-          <chessbtns @btnClick="resetStatus" />
-        </div>
-      </div>
-      <div class="game-mid">
-        <!--<barrage></barrage>-->
-        <chessboard :myTurn="myTurn" :againstId="againstId" :myColor="myColor" :coordinate="coordinate"
-                    :isLose="isLose" :username="username" :userId="userId" ref="chessboard" />
-      </div>
-      <div class="game-right">
-        <div class="avatar">
-          <avatar :myTurn="!myTurn" :username="againstName" />
-        </div>
-        <div class="timer">
-          <counter :chessNum="againstChessNum" />
-          <timer :timerStart="againstTimerStart" />
-        </div>
-        <div class="msgslist">
-          <msgslist :againstId="againstId" :againstName="againstName" :username="username" />
-        </div>
-      </div>
-    </div>
+    <!--<div class="container">-->
+      <!--<div class="game-left">-->
+        <!--<div class="avatar">-->
+          <!--<avatar :myTurn="myTurn" :username="username" />-->
+        <!--</div>-->
+        <!--<div class="timer">-->
+          <!--<counter :chessNum="chessNum" />-->
+          <!--<timer :timerStart="timerStart" />-->
+        <!--</div>-->
+        <!--<div class="chessbtns">-->
+          <!--<chessbtns @btnClick="resetStatus" />-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="game-mid">-->
+        <barrage :linecount="5" :msglist="['1','56','1','1','5']"></barrage>
+        <!--<chessboard :myTurn="myTurn" :againstId="againstId" :myColor="myColor" :coordinate="coordinate"-->
+                    <!--:isLose="isLose" :username="username" :userId="userId" ref="chessboard" />-->
+      <!--</div>-->
+      <!--<div class="game-right">-->
+        <!--<div class="avatar">-->
+          <!--<avatar :myTurn="!myTurn" :username="againstName" />-->
+        <!--</div>-->
+        <!--<div class="timer">-->
+          <!--<counter :chessNum="againstChessNum" />-->
+          <!--<timer :timerStart="againstTimerStart" />-->
+        <!--</div>-->
+        <!--<div class="msgslist">-->
+          <!--<msgslist :againstId="againstId" :againstName="againstName" :username="username" />-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
   </div>
 </template>
 
@@ -198,6 +198,9 @@
 
 <style scoped lang="scss">
   #home {
+    width: 800px;
+    height: 800px;
+    border: 1px solid black;
     .container {
       display: flex;
       flex-direction: row;
