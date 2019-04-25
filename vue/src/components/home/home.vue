@@ -1,6 +1,15 @@
 <template>
   <div id="home">
     <div class="container">
+    <rank v-if="showRank"></rank>
+    
+    <div :class="showRank? 'rankList hidden' : 'rankList'" @click="showRank = !showRank">
+        <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-rank"></use>
+      </svg>
+      <br>
+      <span class="rank">rank</span>
+    </div>
       <div class="game-left">
         <div class="avatar">
           <avatar :myTurn="myTurn" :username="username" />
@@ -42,7 +51,7 @@
   import counter from '../../components/counter/counter';
   import msgslist from '../msgslist/msgslist';
   import barrage from '../barrage/barrage';
-
+  import rank from '../../components/rank/rank'
   export default {
     name: 'home',
     components: {
@@ -53,6 +62,7 @@
       msgslist,
       barrage,
       counter,
+      rank,
     },
     data () {
       return {
@@ -68,6 +78,7 @@
         myTurn: false,
         myColor: -1,
         isLose: false,
+        showRank: false
       };
     },
     mounted () {
@@ -202,7 +213,21 @@
       display: flex;
       flex-direction: row;
       justify-content: center;
-
+      position: relative;
+      .hidden {
+        opacity: .4;
+      }
+      .rankList {
+        cursor: pointer;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        // writing-mode: vertical-lr;
+        .rank {
+          margin-left: 6px;
+        }
+      }
       .game-left {
         width: 280px;
         .avatar {
