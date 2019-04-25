@@ -124,15 +124,18 @@
             alert('对方认输，你赢了')
             this.resetStatus()
             break;
-          case 2:
-            var res = confirm('对方申请悔棋，是否让他一步？')
-            this.$socket.emit('repentRespose', {isAgree: res})
-            break;
           default:
             break;
         }
       },
+      accidentClient (data) {
+        var res = confirm('对方申请悔棋，是否让他一步？')
+        setTimeout(() => {
+          this.$socket.emit('repentRespose', {isAgree: res})
+        }, 0)
+      },
       reciveRepentResult (data) {
+        console.log(111)
         if(data.isAgree) {
           alert('对方同意了你的悔棋请求')
         } else {
