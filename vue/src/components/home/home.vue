@@ -180,11 +180,29 @@
         switch (data.status) { // 0对方掉线 1对方认输 2对方申请悔棋
           case 0:
             alert('对方掉线，你赢了');
+            axios.post("http://120.78.156.5:8080/winUpdate", {username: this.username})
+            .then((msg) => {
+              if(msg.status){
+                console.log("胜局记录添加成功")
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            })
             this.initChessNum();
             this.resetStatus();
             break;
           case 1:
             alert('对方认输，你赢了');
+            axios.post("http://120.78.156.5:8080/winUpdate", {username: this.username})
+                      .then((msg) => {
+                        if(msg.status){
+                          console.log("胜局记录添加成功")
+                        }
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                      })
             this.initChessNum();
             this.resetStatus();
             break;

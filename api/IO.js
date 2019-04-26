@@ -131,10 +131,7 @@ io.on('connection', (socket) => {
         }
         if(msg.status == 2){
             socket.to(socketList[socket.id].opponent).emit('accidentClient', {status: 2});
-<<<<<<< HEAD
             
-=======
->>>>>>> cfcff4227dc28d2f9585ec5d17b830719af9a640
         }
     })
     
@@ -143,11 +140,6 @@ io.on('connection', (socket) => {
             isAgree: msg.isAgree
         });
     })
-
-    socket.on('repentRespose', (msg) =>　{      // msg格式　｛ isAgree: false }
-                console.log("悔棋，　对方返回消息！");
-                socket.to(socketList[socket.id].opponent).emit('reciveRepentResult', { isAgree: msg.isAgree });
-     })
 
     // 客户端断开连接
     socket.on('disconnect', () => {

@@ -89,7 +89,6 @@
         // D-lyw write 将胜者名字传给后台
         axios.post("http://120.78.156.5:8080/winUpdate", {username: this.username})
           .then((msg) => {
-            console.log(msg);
              if(msg.status){
                console.log("胜局记录添加成功")
              }
