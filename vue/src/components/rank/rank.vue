@@ -167,15 +167,21 @@ export default {
     border-right: 1px solid #d0caca;
     padding: 4px;
     .avatar {
-      margin-left: -126px;
+      margin-left: -113px;
       img {
         border-radius: 50%;
         width: 50px;
       }
     }
     .userName {
-      margin-left: -123px;
+      width: 50px;
+      height: 18px;
+      overflow: hidden;
+      white-space:nowrap;
+      text-overflow: ellipsis;
+      margin-left: -112px;
     }
+
   }
 }
 
