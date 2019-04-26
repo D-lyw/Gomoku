@@ -1,49 +1,63 @@
 <template>
   <div id="barrage">
-    <div @click="startmove">触发</div>
-    <div v-for="(item,index) in barrages">
-      <transition name="barrage-move"
-                  @before-enter="beforeEnter"
-                  @enter="enter"
-                  @after-enter="afterEnter"
-                  @after-leave="afterLeave">
+    <div @click="startAnmition">触发</div>
+    <transition-group name="barrage-move"
+                      @before-enter="beforeEnter"
+                      @enter="enter"
+                      @after-enter="afterEnter"
+                      @afterLeave="afterLeave">
+      <div v-for="(item,index) in list" :key="item">
+        <barrageitem :msg="item"></barrageitem>
+      </div>
+    </transition-group>
 
-        <div class="barrage-container" v-if="item.show" style="transform: translateX(100%)">
-          <div class="barrage-com"  ><!--v-if="item.show"-->
-            {{item.content}}
-          </div>
-        </div>
-      </transition>
-    </div>
   </div>
 </template>
 
 <script>
+  import barrageitem from '../barrageitem/barrageitem';
+
   export default {
     name: 'barrage',
     data () {
       return {
-        barrages: [{'content': '32撒大大多多多多多多多多多多多多asd', 'show': false},
-          {'content': '12312123', show: false}],
+        list: [],
+        isShow: false,
       };
     },
-    methods: {
-      startmove () {
-        this.barrages[0].show = !this.barrages[0].show;
+    props: {
+      linecount: {
+        type: Number,
       },
-      beforeEnter (el) {
-
-      },
-      enter (el) {
-        el.style.transform = `translateX(-200px)`;
-      },
-      afterEnter () {
-
-      },
-      afterLeave () {
-
+      msglist: {
+        type: Array,
       },
     },
+    components: {
+      barrageitem,
+    },
+    methods: {
+      startAnmition () {
+        this.list.push(this.msglist[0]);
+      },
+      beforeEnter (el) {
+        console.log('chufa');
+        el.style.transform = 'translateX(600px)';
+        el.style.transition = 'all 10s ease';
+      },
+      enter (el, done) {
+        el.offsetHeight;
+        el.style.transform = 'translateX(0px)';
+        done();
+      },
+      afterEnter () {
+        this.isShow = !this.isShow;
+      },
+      afterLeave (el) {
+      },
+    },
+    watch: {},
+    computed: {},
   };
 </script>
 

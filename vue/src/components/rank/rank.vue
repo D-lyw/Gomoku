@@ -5,47 +5,39 @@
       <img src='/static/img/second.png' class='second-crown'></img>
       <img src="/static/img/avatar2.jpg" class="two" alt="">
       <div class="user">
-        张三 
+        {{seconde.name}} 
         <br>
-        28分
+        {{seconde.winTime}} 
       </div>
     </div>
     <div class='first'>
       <img src='/static/img/first.png' class='first-crown'></img>
       <img src="/static/img/avatar1.jpg" class="one" alt="">
        <div class="user">
-        张三 
+        {{first.name}} 
         <br>
-        60分
+        {{first.winTime}}
       </div>
     </div>
     <div class='third'>
       <img src='/static/img/third.png' class='third-crown'></img>
       <img src="/static/img/avatar3.jpg" class="three" alt="">
        <div class="user">
-        张三十
+        {{third.name}}
         <br>
-        60分
+        {{third.winTime}}
       </div>
     </div>
   </div>
   <div class="otherRank">
     <ul>
-      <li>
-        <div class="">4</div>
+      <li v-for="(item, index) in other" :key="index">
+        <div class="">{{index + 4 }}</div>
         <div class="avatar">
           <img src="/static/img/avatar1.jpg" alt="">
         </div>
-        <div class="userName">张三</div>
-        <div class="score">60分</div>
-      </li>
-      <li>
-        <div class="">4</div>
-        <div class="avatar">
-          <img src="/static/img/avatar1.jpg" alt="">
-        </div>
-        <div class='userName'>张三</div>
-        <div class="score">60分</div>
+        <div class="userName">{{item.name}}</div>
+        <div class="score">{{item.winTime}}</div>
       </li>
     </ul>
   </div>
@@ -54,23 +46,33 @@
 
 <script>
 import axios from "axios"
+
 export default {
   data() {
     return {
-
+      first: {},
+      seconde: {},
+      third: {},
+      other: []
     }
   },
   methods: {
 
   },
   mounted() {
-    // axios.post('localhost:8081/getTop10')
-    //   .then(function (response) {
-    //     console.log(response);
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
+    var that = this;
+    // D-lyw write 将输入的传给后台
+    axios.post('http://120.78.156.5:8080/getTop10')
+      .then(function (response) {
+        console.log(response);
+        that.first = response.data.shift();
+        that.seconde = response.data.shift();
+        that.third = response.data.shift();
+        that.other = response.data
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 }
 </script>

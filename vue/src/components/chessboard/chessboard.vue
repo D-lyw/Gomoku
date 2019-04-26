@@ -13,7 +13,7 @@
 
 <script>
   import isWin from '../../utils/isWin';
-
+  import axios from 'axios'
   export default {
     name: 'chess-board',
     props: ['myTurn', 'againstId', 'myColor', 'coordinate', 'isLose', 'username', 'userId'],
@@ -52,6 +52,7 @@
             // 判断是否胜利
             var ifWin = isWin(this.map, row, col);
             if (ifWin) {
+              this.updateWinTime();
               setTimeout(() => {
                 alert('你赢了');
                 this.showStart = !this.showStart;
@@ -73,6 +74,20 @@
           }
         }
       },
+      updateWinTime(){
+
+        // D-lyw write 将胜者名字传给后台
+        axios.post("http://120.78.156.5:8080/winUpdate", {username: this.username})
+          .then((msg) => {
+            console.log(msg);
+             if(msg.status){
+               console.log("胜局记录添加成功")
+             }
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+      },
       startGame () {
         this.showStart = !this.showStart;
         this.map = [
@@ -92,7 +107,7 @@
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         ];
         this.$socket.emit('startGame', {userName: this.username, id: this.userId});
-      },
+      }
     },
     watch: {
       coordinate: function () {
