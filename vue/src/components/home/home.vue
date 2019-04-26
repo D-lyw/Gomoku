@@ -1,7 +1,7 @@
 <template>
   <div id="home">
     <div class="container">
-    <rank v-if="showRank"></rank>
+    <rank v-if="showRank" v-on:closerank='close'></rank>
     <div :class="showRank? 'rankList hidden' : 'rankList'" @click="showRank = !showRank">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-rank"></use>
@@ -232,6 +232,9 @@
       },
     },
     methods: {
+      close() {
+        this.showRank = !this.showRank
+      },
       resetStatus () {
         this.$refs.chessboard.showStart = true;
         this.$refs.chessBtn.hasRegret = false;
