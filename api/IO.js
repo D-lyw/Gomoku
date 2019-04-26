@@ -131,13 +131,15 @@ io.on('connection', (socket) => {
         }
         if(msg.status == 2){
             socket.to(socketList[socket.id].opponent).emit('accidentClient', {status: 2});
-            socket.on('repentRespose', (msg) =>　{      // msg格式　｛ isAgree: false }
-                console.log("悔棋，　对方返回消息！");
-                socket.emit('reciveRepentResult', { isAgree: msg.isAgree });
-            })
+            
         }
     })
 
+    socket.on('repentRespose', (msg) =>　{      // msg格式　｛ isAgree: false }
+                console.log("悔棋，　对方返回消息！");
+                socket.emit('reciveRepentResult', { isAgree: msg.isAgree });
+            })
+            
     // 客户端断开连接
     socket.on('disconnect', () => {
         console.log(`用户 ${socketList[socket.id].name} 断开连接....\n`);

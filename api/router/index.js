@@ -78,7 +78,7 @@ router.post('/getTop10', (req, res, next) => {
 })
 
 // 获胜
-router.post('/win', (req, res, next) => {
+router.post('/winUpdate', (req, res, next) => {
     //跨域
     res.header("Access-Control-Allow-Origin", "*");
     res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
