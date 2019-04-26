@@ -23,7 +23,7 @@
       </div>
       <div class="game-mid">
         <div class="barrageContainer">
-          <barrage :linecount="10" />
+          <barrage :myTurn="myTurn" :linecount="10" />
         </div>
         <chessboard :myTurn="myTurn" :againstId="againstId" :myColor="myColor" :coordinate="coordinate"
                     :isLose="isLose" :username="username" :userId="userId" ref="chessboard"
@@ -38,7 +38,7 @@
           <timer :timerStart="againstTimerStart" />
         </div>
         <div class="msgslist">
-          <msgslist :againstId="againstId" :againstName="againstName" :username="username" />
+          <msgslist  :againstId="againstId" :againstName="againstName" :username="username" />
         </div>
       </div>
     </div>

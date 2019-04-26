@@ -30,5 +30,9 @@
     border-radius: 10px;
     padding: 0 10px;
     font-weight: 500;
+    max-width: 300px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 </style>

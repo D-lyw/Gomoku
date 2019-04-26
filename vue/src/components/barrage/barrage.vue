@@ -30,7 +30,10 @@
     props: {
       linecount: {
         type: Number,
-      }
+      },
+      myTurn: {
+        type: Boolean,
+      },
     },
     components: {
       barrageitem,
@@ -43,9 +46,8 @@
       beforeEnter (el) {
         console.log('chufa');
         let barrageContainerWidth = window.getComputedStyle(this.$refs.barrageContainer)['width'];
-        // let elWidth= el.clientWidth;
-        // console.log(elWidth);
         el.style.position = 'absolute';
+        console.log(el.clientWidth);
         el.style.transform = `translateX(${barrageContainerWidth})`;
         el.style.transition = 'all 8s linear';
       },
@@ -70,7 +72,7 @@
       this.$root.Bus.$on('newMsg', function (newMsg) {
         let aa = {
           cont: newMsg.cont,
-          linehei: that.rnd(0, parseInt(that.linecount * that.linehei)),
+          linehei: that.rnd(0, parseInt((that.linecount - 1) * that.linehei)),
         };
         that.list.push(aa);
       });
