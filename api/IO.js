@@ -131,13 +131,6 @@ io.on('connection', (socket) => {
         }
         if(msg.status == 2){
             socket.to(socketList[socket.id].opponent).emit('accidentClient', {status: 2});
-<<<<<<< HEAD
-=======
-            socket.on('repentRespose', (msg) =>　{      // msg格式　｛ isAgree: false }
-                console.log("悔棋，　对方返回消息！");
-                socket.emit('reciveRepentResult', { isAgree: msg.isAgree });
-            })
->>>>>>> 4418c0ae2c6d0baa9b5752480a21ea343a80d6d3
         }
     })
     
@@ -170,22 +163,3 @@ io.on('connection', (socket) => {
         console.log(`当前在线用户共 ${Object.keys(socketList).length} 人\n\n`);
     })
 })
-<<<<<<< HEAD
-
-
-
-
-http.listen('8000', function(){
-    console.log("Listening 8000....")
-})
-
-
-
-/**
-前端
-
-
-
- */
-=======
->>>>>>> 4418c0ae2c6d0baa9b5752480a21ea343a80d6d3
