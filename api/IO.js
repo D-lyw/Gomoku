@@ -1,18 +1,23 @@
-var express = require('express');
-var http = require('http').createServer(express);
+var app = require('express')();
+var http = require('http').Server(app);
 var io = require('socket.io')(http);
+
+var cors = require('cors')
 
 var match = require('./matchOpponent');
 var util = require('./util');
 
+http.listen('8080', () =>  { 
+    console.log("listening 8080.........")
+})
 
-// 路由部分
+app.use(cors());
+
+//路由部分
 var router = require('./router/index');
-// var app = express();
-// app.use(router);
+app.use(router);
 
-//监听端口
-// app.listen(8000);
+
 
 // 每个用户socketId
 var socketList = {};
@@ -28,7 +33,7 @@ io.on('connection', (socket) => {
         name: ''                // 该用户的名称
     }
 
-    // 第一步首先获取 新用户的昵称; 格式 {userName: "Tom"}
+    // 第一步首先获取 新用户的昵称; 格式 {userName: "Tom"} 
     socket.on('newUserName', (msg) => {
 
         console.log("newUser coming --- " + msg.userName + "\n");
@@ -78,7 +83,7 @@ io.on('connection', (socket) => {
                 socket.emit('startGameResponse', {status: 1});              // 匹配失败, 告诉发起方, 匹配失败信息;
                 matching = matching.filter((item) => {
                     return item != socket.id;
-                })
+                })  
             }
             console.log(`用户 ${socketList[socket.id].name} 尝试匹配 失败 !!!! \n`);
         })
@@ -126,6 +131,13 @@ io.on('connection', (socket) => {
         }
         if(msg.status == 2){
             socket.to(socketList[socket.id].opponent).emit('accidentClient', {status: 2});
+<<<<<<< HEAD
+=======
+            socket.on('repentRespose', (msg) =>　{      // msg格式　｛ isAgree: false }
+                console.log("悔棋，　对方返回消息！");
+                socket.emit('reciveRepentResult', { isAgree: msg.isAgree });
+            })
+>>>>>>> 4418c0ae2c6d0baa9b5752480a21ea343a80d6d3
         }
     })
     
@@ -158,6 +170,7 @@ io.on('connection', (socket) => {
         console.log(`当前在线用户共 ${Object.keys(socketList).length} 人\n\n`);
     })
 })
+<<<<<<< HEAD
 
 
 
@@ -174,3 +187,5 @@ http.listen('8000', function(){
 
 
  */
+=======
+>>>>>>> 4418c0ae2c6d0baa9b5752480a21ea343a80d6d3
