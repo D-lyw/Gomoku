@@ -1,6 +1,12 @@
 <template>
-<div class="rankWrap animated fadeInUp">
+<div class="rankWrap animated fadeInLeft">
   <div class='rank'>
+  <div class="close" @click="$emit('closerank')">
+    <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-close"></use>
+      </svg>
+  </div>
+
     <div class='second'>
       <img src='/static/img/second.png' class='second-crown'></img>
       <img src="/static/img/avatar2.jpg" class="two" alt="">
@@ -56,9 +62,6 @@ export default {
       other: []
     }
   },
-  methods: {
-
-  },
   mounted() {
     var that = this;
     // D-lyw write 将输入的传给后台
@@ -83,9 +86,9 @@ export default {
   padding: 0;
 }
 .rankWrap {
-  margin-left: -30px;
-  left: 30px;
-  // margin-right: 20px;
+  // margin-left: -30px;
+  z-index: 2;
+  left: 0;
   position: absolute; 
 }
 
@@ -95,6 +98,14 @@ export default {
   width: 264px;
   padding-bottom: 30px;
   background-image: linear-gradient(to top, #71cdfa, #19b4ec);
+  .close {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    cursor: pointer;
+    font-size: 8px;
+    color: white;
+  }
   .first, .second, .third {
     position: relative;
     width: 24%;
