@@ -66,12 +66,6 @@
 </script>
 
 <style>
-  body {
-    background-image: url(../../../static/img/loginBac.jpg);
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-  }
-
   .login-form {
     width: 500px;
     margin: 0 auto;
