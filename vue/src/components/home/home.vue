@@ -1,7 +1,7 @@
 <template>
   <div id="home">
     <div class="container">
-    <rank v-if="showRank"></rank>
+    <rank v-if="showRank" v-on:closerank='close'></rank>
     <div :class="showRank? 'rankList hidden' : 'rankList'" @click="showRank = !showRank">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-rank"></use>
@@ -23,7 +23,7 @@
       </div>
       <div class="game-mid">
         <div class="barrageContainer">
-          <barrage :linecount="10" />
+          <barrage :myTurn="myTurn" :linecount="10" />
         </div>
         <chessboard :myTurn="myTurn" :againstId="againstId" :myColor="myColor" :coordinate="coordinate"
                     :isLose="isLose" :username="username" :userId="userId" ref="chessboard"
@@ -38,7 +38,7 @@
           <timer :timerStart="againstTimerStart" />
         </div>
         <div class="msgslist">
-          <msgslist :againstId="againstId" :againstName="againstName" :username="username" />
+          <msgslist  :againstId="againstId" :againstName="againstName" :username="username" />
         </div>
       </div>
     </div>
@@ -250,6 +250,9 @@
       },
     },
     methods: {
+      close() {
+        this.showRank = !this.showRank
+      },
       resetStatus () {
         this.$refs.chessboard.showStart = true;
         this.$refs.chessBtn.hasRegret = false;

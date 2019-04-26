@@ -26,7 +26,7 @@
           :disabled='inputDisabled'
           placeholder="匹配对手后可进行聊天"
         >
-        <button :disabled='inputDisabled'  @click="submit" class="submit">发送</button>
+        <button :disabled='inputDisabled' @click="submit" class="submit">发送</button>
       </div>
     </div>
   </div>
@@ -48,12 +48,14 @@
       recvMsg (data) {
         this.reciveMsg = data.msg;
         console.log(this.reciveMsg);
-        this.msgs.push({
+        let temp = {
           username: this.againstName,
           cont: this.reciveMsg,
           type: 'receive',
-        });
+        };
+        this.msgs.push(temp);
         this.scrollToBottom();
+        this.$root.Bus.$emit('newMsg', temp);
       },
     },
     methods: {
