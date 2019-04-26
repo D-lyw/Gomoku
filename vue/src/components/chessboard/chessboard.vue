@@ -8,6 +8,14 @@
       </div>
     </div>
     <div v-if="showStart" @click="startGame" class="startgame">开始游戏</div>
+    <div v-if="showLoading" class="loading">
+      <div>
+        匹配中
+      </div>
+      <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-loading1"></use>
+      </svg>
+    </div>
   </div>
 </template>
 
@@ -19,6 +27,7 @@
     props: ['myTurn', 'againstId', 'myColor', 'coordinate', 'isLose', 'username', 'userId'],
     data () {
       return {
+        showLoading: false,
         showStart: true,
         map: [
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -90,6 +99,7 @@
       },
       startGame () {
         this.showStart = !this.showStart;
+        this.showLoading = !this.showLoading
         this.map = [
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -139,9 +149,30 @@
     width: 100%;
     height: 100%;
     background-color: bisque;
+    .loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      .icon {
+        font-size: 12px;
+        @keyframes spin {
+        0% {
+          transform: rotate(0deg)
+        }
+        100% {
+          transform: rotate(360deg)
+        }
+      }
+        animation: spin 1.2s infinite linear;
+      
+      }
+    }
     .startgame {
       position: absolute;
-      top: 60%;
+      top: 50%;
       left: 50%;
       transform: translateX(-50%);
       font-size: 22px;
