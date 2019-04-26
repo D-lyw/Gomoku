@@ -1,8 +1,8 @@
 <template>
   <div id="home">
     <div class="container">
-      <rank v-if="showRank"></rank>
-      <div :class="showRank? 'rankList hidden' : 'rankList'" @click="showRank = !showRank">
+    <rank v-if="showRank"></rank>
+    <div :class="showRank? 'rankList hidden' : 'rankList'" @click="showRank = !showRank">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-rank"></use>
         </svg>
@@ -52,7 +52,7 @@
   import msgslist from '../msgslist/msgslist';
   import barrage from '../barrage/barrage';
   import rank from '../../components/rank/rank';
-  import axios from 'axios'
+
   export default {
     name: 'home',
     components: {
@@ -124,8 +124,10 @@
       this.$root.Bus.$on('againstTimerStart', function (arg) {
         that.againstTimerStart = !that.againstTimerStart;
       });
-      this.$root.$on('resetHasRegret', function (){
-        that.$refs.chessBtn.hasRegret = false
+
+      this.$root.Bus.$on('resetHasRegret', function () {
+        console.log(that.$refs.chessBtn)
+        that.$refs.chessBtn.hasRegret = false;
       })
     },
     sockets: {
@@ -173,31 +175,11 @@
         switch (data.status) { // 0对方掉线 1对方认输 2对方申请悔棋
           case 0:
             alert('对方掉线，你赢了');
-            axios.post("http://120.78.156.5:8080/winUpdate", {username: this.username})
-            .then((msg) => {
-              console.log(msg);
-              if(msg.status){
-                console.log("胜局记录添加成功")
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-            })
             this.initChessNum();
             this.resetStatus();
             break;
           case 1:
             alert('对方认输，你赢了');
-            axios.post("http://120.78.156.5:8080/winUpdate", {username: this.username})
-            .then((msg) => {
-              console.log(msg);
-              if(msg.status){
-                console.log("胜局记录添加成功")
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-            })
             this.initChessNum();
             this.resetStatus();
             break;
@@ -206,19 +188,21 @@
         }
       },
       accidentClient (data) {
-        var res = confirm('对方申请悔棋，是否让他一步？');
-        this.$socket.emit('repentRespose', {isAgree: res});
-        if (res) {
-          console.log(this.coordinate);
-          if(this.myTurn) {
-            this.$set(this.$refs.chessboard.map[this.coordinate[0]], this.coordinate[1], 0);
-            this.$root.Bus.$emit('againstChessNum', this.againstChessNum - 1);
-            this.myTurn = false
-          } else {
-            this.$set(this.$refs.chessboard.map[this.coordinate[0]], this.coordinate[1], 0);
+        var res = confirm('对方申请悔棋，是否让他一步？')
+        this.$socket.emit('repentRespose', {isAgree: res})
+        if(res) {
+          console.log(this.coordinate)
+          if(this.myTurn == true){
+         // this.$set(this.$refs.chessboard.map[this.myCoordinate[0]], this.myCoordinate[1], 0);
+          this.$set(this.$refs.chessboard.map[this.coordinate[0]], this.coordinate[1], 0);
+         // this.$root.Bus.$emit('chessNum', this.chessNum - 1)
+          this.$root.Bus.$emit('againstChessNum', this.againstChessNum - 1)
+          this.myTurn=false}
+          else{
             this.$set(this.$refs.chessboard.map[this.myCoordinate[0]], this.myCoordinate[1], 0);
-            this.$root.Bus.$emit('chessNum', this.chessNum - 1);
-            this.$root.Bus.$emit('againstChessNum', this.againstChessNum - 1);
+          this.$set(this.$refs.chessboard.map[this.coordinate[0]], this.coordinate[1], 0);
+          this.$root.Bus.$emit('chessNum', this.chessNum - 1)
+          this.$root.Bus.$emit('againstChessNum', this.againstChessNum - 1)
           }
         }
       },
@@ -226,15 +210,16 @@
         if (data.isAgree) {
           alert('对方同意了你的悔棋请求');
           console.log(this.myCoordinate);
-          if(this.myTurn){
-             this.$set(this.$refs.chessboard.map[this.myCoordinate[0]], this.myCoordinate[1], 0);
-             this.$set(this.$refs.chessboard.map[this.coordinate[0]], this.coordinate[1], 0);
-             this.$root.Bus.$emit('chessNum', this.chessNum - 1);
-             this.$root.Bus.$emit('againstChessNum', this.againstChessNum - 1);
-          }else {
-             this.$set(this.$refs.chessboard.map[this.myCoordinate[0]], this.myCoordinate[1], 0);
-             this.$root.Bus.$emit('chessNum', this.chessNum - 1);
-             this.myTurn = true
+          if(this.myTurn == true){
+          this.$set(this.$refs.chessboard.map[this.myCoordinate[0]], this.myCoordinate[1], 0);
+          this.$set(this.$refs.chessboard.map[this.coordinate[0]], this.coordinate[1], 0);
+          this.$root.Bus.$emit('chessNum', this.chessNum - 1)
+          this.$root.Bus.$emit('againstChessNum', this.againstChessNum - 1)
+          }
+          else{
+          this.$set(this.$refs.chessboard.map[this.myCoordinate[0]], this.myCoordinate[1], 0);
+          this.$root.Bus.$emit('chessNum', this.chessNum - 1)
+          this.myTurn=true
           }
         } else {
           alert('对方无情地拒绝了你的悔棋请求');

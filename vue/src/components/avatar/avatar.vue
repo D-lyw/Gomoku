@@ -13,7 +13,7 @@
         type: String,
       },
       myTurn: {
-        type: Boolean,
+        type: Boolean
       },
     },
   };
@@ -48,7 +48,7 @@
     .name {
       width: 100%;
       font-weight: bold;
-      background-color: aliceblue;
+      background-color: #e0eee8;
       border-radius: 8px;
       overflow: hidden;
       word-break: break-all;

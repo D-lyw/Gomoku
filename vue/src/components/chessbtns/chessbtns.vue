@@ -8,7 +8,7 @@
 <script>
   export default {
     name: 'chess-btns',
-    data() {
+    data () {
       return {
         hasRegret: false
       }
@@ -22,16 +22,15 @@
         }
       },
       hanleRegret () {
-        if(!this.hasRegret){
-         this.$socket.emit('accident', {status: 2})
-         this.hasRegret = true
+        if(!this.hasRegret) {
+          this.$socket.emit('accident', {status: 2})
+          this.hasRegret = true
         } else {
           alert('只能悔一次棋哦')
         }
-        
       }
-    },
-  };
+    }
+  }
 </script>
 
 <style scoped lang="scss">

@@ -52,15 +52,14 @@
             // 判断是否胜利
             var ifWin = isWin(this.map, row, col);
             if (ifWin) {
-              
+              this.updateWinTime();
               setTimeout(() => {
                 alert('你赢了');
-                this.updateWinTime();
                 this.showStart = !this.showStart;
                 this.$root.Bus.$emit('chessNum', 0);
                 this.$root.Bus.$emit('againstChessNum', 0);
                 that.$root.Bus.$emit('againstTimerStart');
-                this.$root.Bus.$emit('resetHasRegret')
+                that.$root.Bus.$emit('resetHasRegret')
               }, 0);
             }
             var x = row;
@@ -77,7 +76,7 @@
         }
       },
       updateWinTime(){
-        console.log("执行updateWinTime");
+
         // D-lyw write 将胜者名字传给后台
         axios.post("http://120.78.156.5:8080/winUpdate", {username: this.username})
           .then((msg) => {
@@ -125,7 +124,7 @@
             that.$root.Bus.$emit('chessNum', 0);
             that.$root.Bus.$emit('againstChessNum', 0);
             that.$root.Bus.$emit('timerStart');
-            this.$root.Bus.$emit('resetHasRegret')
+            that.$root.Bus.$emit('resetHasRegret')
             that.showStart = !this.showStart;
           }, 0);
         }

@@ -4,7 +4,8 @@
   "description": "learn Socket.io",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"node IO.js"
   },
   "author": "D-lyw",
   "license": "ISC",
