@@ -8,11 +8,11 @@ var util = require('./util');
 
 // 路由部分
 var router = require('./router/index');
-var app = express();
-app.use(router);
+// var app = express();
+// app.use(router);
 
 //监听端口
-app.listen(8000);
+// app.listen(8000);
 
 // 每个用户socketId
 var socketList = {};
@@ -125,11 +125,14 @@ io.on('connection', (socket) => {
             util.resetStatus(socketList, socket.id, socketList[socket.id].opponent);
         }
         if(msg.status == 2){
-            socket.to(socketList[socket.id].opponent).emit('accident', {status: 2});
-            socket.on('repentRespose', (msg) =>　{      // msg格式　｛ isAgree: false }
-                socket.to(socketList[socket.id].opponent).emit('reciveRepentResult', { isAgree: msg.isAgree });
-            })
+            socket.to(socketList[socket.id].opponent).emit('accidentClient', {status: 2});
         }
+    })
+    
+    socket.on('repentRespose', (msg) => { // msg格式　｛ isAgree: false }
+        socket.to(socketList[socket.id].opponent).emit('reciveRepentResult', {
+            isAgree: msg.isAgree
+        });
     })
 
     // 客户端断开连接
@@ -159,8 +162,8 @@ io.on('connection', (socket) => {
 
 
 
-http.listen('8080', function(){
-    console.log("Listening 8080....")
+http.listen('8000', function(){
+    console.log("Listening 8000....")
 })
 
 
