@@ -24,8 +24,9 @@
           ref="input"
           @keyup.enter="submit"
           :disabled='inputDisabled'
-          placeholder="匹配对手后可进行聊天">
-        <button :disabled='inputDisabled' @click="submit" class="submit">发送</button>
+          placeholder="匹配对手后可进行聊天"
+        >
+        <button :disabled='inputDisabled'  @click="submit" class="submit">发送</button>
       </div>
     </div>
   </div>
@@ -39,7 +40,7 @@
         msgs: [],
         sendMsg: '',
         reciveMsg: '',
-        inputDisabled:true
+        inputDisabled: true,
       };
     },
     props: ['againstId', 'username', 'againstName'],
@@ -59,14 +60,16 @@
       submit () {
         var sendMsg = this.$refs.input.value;
         if (!sendMsg || !this.againstId) return;
-        this.msgs.push({
+        let newMsg = {
           username: this.username,
           cont: sendMsg,
           type: 'send',
-        });
+        };
+        this.msgs.push(newMsg);
         this.scrollToBottom();
         this.$refs.input.value = '';
         console.log(this.msgs);
+        this.$root.Bus.$emit('newMsg', newMsg);
         this.newMessage(this.againstId, sendMsg);
       },
       newMessage (againstId, sendMsg) {
@@ -79,17 +82,17 @@
         });
       },
     },
-    watch:{
-      againstId:function () {
-        if(this.againstId===0 || this.againstId){
-          this.inputDisabled=false;
-          this.$refs.input.placeholder="输入你要发送的消息";
-        }else{
-          this.inputDisabled=true;
-          this.$refs.input.placeholder="匹配对手后可进行聊天";
+    watch: {
+      againstId: function () {
+        if (this.againstId === 0 || this.againstId) {
+          this.inputDisabled = false;
+          this.$refs.input.placeholder = '输入你要发送的消息';
+        } else {
+          this.inputDisabled = true;
+          this.$refs.input.placeholder = '匹配对手后可进行聊天';
         }
-      }
-    }
+      },
+    },
   };
 </script>
 
@@ -126,6 +129,8 @@
             margin-bottom: 6px;
           }
           .onemsg {
+            box-sizing: border-box;
+            min-height: 33px;
             background-color: #FFFFFF;
             border-radius: 8px;
             padding: 8px;
@@ -154,6 +159,8 @@
             margin-bottom: 6px;
           }
           .onemsg {
+            box-sizing: border-box;
+            min-height: 33px;
             background-color: #0188FB;
             border-radius: 8px;
             padding: 8px;

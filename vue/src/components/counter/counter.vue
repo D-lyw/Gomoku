@@ -41,6 +41,7 @@
       height: 30px;
       border-radius: 8px;
       background-color: white;
+      font-weight:600;
     }
   }
 </style>
