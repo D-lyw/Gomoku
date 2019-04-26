@@ -1,13 +1,14 @@
 <template>
-  <div id="barrage">
-    <div @click="startAnmition">触发</div>
+  <div id="barrage" ref="barrageContainer">
     <transition-group name="barrage-move"
                       @before-enter="beforeEnter"
                       @enter="enter"
                       @after-enter="afterEnter"
-                      @afterLeave="afterLeave">
-      <div v-for="(item,index) in list" :key="item">
-        <barrageitem :msg="item"></barrageitem>
+                      @afterLeave="afterLeave"
+                      style="display: inline-block"
+    >
+      <div v-for="(item,index) in list" :key="item.cont+Math.random()">
+        <barrageitem :msg="item.cont" :linehei="item.linehei"></barrageitem>
       </div>
     </transition-group>
 
@@ -23,27 +24,30 @@
       return {
         list: [],
         isShow: false,
+        linehei: 0,
       };
     },
     props: {
       linecount: {
         type: Number,
-      },
-      msglist: {
-        type: Array,
-      },
+      }
     },
     components: {
       barrageitem,
     },
     methods: {
-      startAnmition () {
-        this.list.push(this.msglist[0]);
+      rnd (n, m) {
+        var random = Math.floor(Math.random() * (m - n + 1) + n);
+        return random;
       },
       beforeEnter (el) {
         console.log('chufa');
-        el.style.transform = 'translateX(600px)';
-        el.style.transition = 'all 10s ease';
+        let barrageContainerWidth = window.getComputedStyle(this.$refs.barrageContainer)['width'];
+        // let elWidth= el.clientWidth;
+        // console.log(elWidth);
+        el.style.position = 'absolute';
+        el.style.transform = `translateX(${barrageContainerWidth})`;
+        el.style.transition = 'all 8s linear';
       },
       enter (el, done) {
         el.offsetHeight;
@@ -51,19 +55,36 @@
         done();
       },
       afterEnter () {
-        this.isShow = !this.isShow;
+        this.list.shift();
       },
       afterLeave (el) {
       },
     },
     watch: {},
     computed: {},
+    mounted () {
+      let that = this;
+      let barrageHei = window.getComputedStyle(this.$refs.barrageContainer)['height'];
+      this.linehei = parseInt(barrageHei) / this.linecount;
+
+      this.$root.Bus.$on('newMsg', function (newMsg) {
+        let aa = {
+          cont: newMsg.cont,
+          linehei: that.rnd(0, parseInt(that.linecount * that.linehei)),
+        };
+        that.list.push(aa);
+      });
+
+    },
   };
 </script>
 
 <style scoped lang="scss">
   #barrage {
     width: 100%;
+    height: 100%;
+    pointer-events: none;
+    position: relative;
     .barrage-container {
       /*transform: translateX(100%);*/
       .barrage-com {
