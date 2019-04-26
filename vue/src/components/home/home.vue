@@ -1,8 +1,8 @@
 <template>
   <div id="home">
     <div class="container">
-      <rank v-if="showRank"></rank>
-      <div :class="showRank? 'rankList hidden' : 'rankList'" @click="showRank = !showRank">
+      <rank v-if="showRank" @closerank='close'></rank>
+      <div v-show="!showRank" class="rankList" @click="showRank = !showRank">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-rank"></use>
         </svg>
@@ -185,12 +185,14 @@
         }
       },
       accidentClient (data) {
-        var res = confirm('对方申请悔棋，是否让他一步？');
-        this.$socket.emit('repentRespose', {isAgree: res});
-        if (res) {
-          console.log(this.coordinate);
+        var res = confirm('对方申请悔棋，是否让他一步？')
+        this.$socket.emit('repentRespose', {isAgree: res})
+        if(res) {
+          console.log(this.coordinate)
+          this.$set(this.$refs.chessboard.map[this.myCoordinate[0]], this.myCoordinate[1], 0);
           this.$set(this.$refs.chessboard.map[this.coordinate[0]], this.coordinate[1], 0);
-          this.$root.Bus.$emit('againstChessNum', this.againstChessNum - 1);
+          this.$root.Bus.$emit('chessNum', this.chessNum - 1)
+          this.$root.Bus.$emit('againstChessNum', this.againstChessNum - 1)
         }
       },
       reciveRepentResult (data) {
@@ -198,13 +200,19 @@
           alert('对方同意了你的悔棋请求');
           console.log(this.myCoordinate);
           this.$set(this.$refs.chessboard.map[this.myCoordinate[0]], this.myCoordinate[1], 0);
-          this.$root.Bus.$emit('chessNum', this.chessNum - 1);
+          this.$set(this.$refs.chessboard.map[this.coordinate[0]], this.coordinate[1], 0);
+          this.$root.Bus.$emit('chessNum', this.chessNum - 1)
+          this.$root.Bus.$emit('againstChessNum', this.againstChessNum - 1)
         } else {
           alert('对方无情地拒绝了你的悔棋请求');
         }
       },
     },
     methods: {
+      close() {
+        
+        this.showRank = false
+      },
       resetStatus () {
         this.$refs.chessboard.showStart = true;
         this.againstId = '';

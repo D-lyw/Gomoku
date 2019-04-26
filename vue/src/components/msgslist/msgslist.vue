@@ -23,11 +23,10 @@
           class="userinput"
           ref="input"
           @keyup.enter="submit"
-
+          :disabled='inputDisabled'
           placeholder="匹配对手后可进行聊天"
         >
-        <!--:disabled='inputDisabled'-->
-        <button  @click="submit" class="submit">发送</button>
+        <button :disabled='inputDisabled'  @click="submit" class="submit">发送</button>
       </div>
     </div>
   </div>
@@ -60,7 +59,7 @@
     methods: {
       submit () {
         var sendMsg = this.$refs.input.value;
-        // if (!sendMsg || !this.againstId) return;
+        if (!sendMsg || !this.againstId) return;
         let newMsg = {
           username: this.username,
           cont: sendMsg,

@@ -1,6 +1,12 @@
 <template>
-  <div class="rankWrap animated fadeInUp">
+  <div class="rankWrap animated fadeInLeft">
     <div class='rank'>
+      <div class="close" @click="$emit('closerank')">
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-close"></use>
+        </svg>
+      </div>
+
       <div class='second'>
         <img src='/static/img/second.png' class='second-crown'></img>
         <img src="/static/img/avatar2.jpg" class="two" alt="">
@@ -45,32 +51,33 @@
 </template>
 
 <script>
-  import axios from 'axios';
+  import axios from "axios"
 
   export default {
-    data () {
+    data() {
       return {
         first: {},
         seconde: {},
         third: {},
-        other: [],
-      };
+        other: []
+      }
     },
-    methods: {},
-    mounted () {
+    mounted() {
       var that = this;
       // D-lyw write 将输入的传给后台
-      axios.post('http://120.78.156.5:8080/getTop10').then(function (response) {
+      axios.post('http://120.78.156.5:8080/getTop10')
+      .then(function (response) {
         console.log(response);
         that.first = response.data.shift();
         that.seconde = response.data.shift();
         that.third = response.data.shift();
-        that.other = response.data;
-      }).catch(function (error) {
+        that.other = response.data
+      })
+      .catch(function (error) {
         console.log(error);
       });
-    },
-  };
+    }
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -78,11 +85,10 @@
     margin: 0;
     padding: 0;
   }
-
   .rankWrap {
-    margin-left: -30px;
-    left: 30px;
-    // margin-right: 20px;
+    // margin-left: -30px;
+    z-index: 2;
+    left: 0;
     position: absolute;
   }
 
@@ -92,6 +98,14 @@
     width: 264px;
     padding-bottom: 30px;
     background-image: linear-gradient(to top, #71cdfa, #19b4ec);
+    .close {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      cursor: pointer;
+      font-size: 8px;
+      color: white;
+    }
     .first, .second, .third {
       position: relative;
       width: 24%;
@@ -137,16 +151,18 @@
       // height: 96px;
     }
   }
-
   .otherRank {
     width: 264px;
     ul {
       list-style-type: none;
+      background-color: white;
+
     }
     li {
       font-size: 12px;
       color: #55555591;
       display: flex;
+      color: black;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
@@ -159,18 +175,20 @@
           border-radius: 50%;
           width: 50px;
         }
+
       }
       .userName {
         width: 50px;
         height: 18px;
         overflow: hidden;
-        white-space: nowrap;
+        white-space:nowrap;
         text-overflow: ellipsis;
         margin-left: -112px;
       }
-
+      .score{
+        margin-right: 8px;
+      }
     }
   }
-
 
 </style>
