@@ -22,7 +22,9 @@
         </div>
       </div>
       <div class="game-mid">
-        <!--<barrage :linecount="5" :msglist="['1','56','1','1','5']"></barrage>-->
+        <div class="barrageContainer">
+          <barrage :linecount="10" />
+        </div>
         <chessboard :myTurn="myTurn" :againstId="againstId" :myColor="myColor" :coordinate="coordinate"
                     :isLose="isLose" :username="username" :userId="userId" ref="chessboard"
                     @chessClick="handleChessClick" />
@@ -222,9 +224,6 @@
 
 <style scoped lang="scss">
   #home {
-    /*width: 800px;*/
-    /*height: 800px;*/
-    /*border: 1px solid black;*/
     .container {
       display: flex;
       flex-direction: row;
@@ -262,9 +261,17 @@
         }
       }
       .game-mid {
+        position: relative;
         width: 600px;
         height: 580px;
         margin-top: 10px;
+        .barrageContainer {
+          pointer-events: none;
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          z-index: 2;
+        }
       }
       .game-right {
         width: 280px;
