@@ -60,6 +60,7 @@
                 this.$root.Bus.$emit('chessNum', 0);
                 this.$root.Bus.$emit('againstChessNum', 0);
                 that.$root.Bus.$emit('againstTimerStart');
+                this.$root.Bus.$emit('resetHasRegret')
               }, 0);
             }
             var x = row;
@@ -124,6 +125,7 @@
             that.$root.Bus.$emit('chessNum', 0);
             that.$root.Bus.$emit('againstChessNum', 0);
             that.$root.Bus.$emit('timerStart');
+            this.$root.Bus.$emit('resetHasRegret')
             that.showStart = !this.showStart;
           }, 0);
         }

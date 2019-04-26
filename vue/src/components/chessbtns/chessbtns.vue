@@ -8,6 +8,11 @@
 <script>
   export default {
     name: 'chess-btns',
+    data() {
+      return {
+        hasRegret: false
+      }
+    },
     methods: {
       handleGiveUp () {
         var res = confirm('这就要放弃了吗？')
@@ -17,7 +22,13 @@
         }
       },
       hanleRegret () {
-        this.$socket.emit('accident', {status: 2})
+        if(!this.hasRegret){
+         this.$socket.emit('accident', {status: 2})
+         this.hasRegret = true
+        } else {
+          alert('只能悔一次棋哦')
+        }
+        
       }
     },
   };

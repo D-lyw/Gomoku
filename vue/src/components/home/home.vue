@@ -18,7 +18,7 @@
           <timer :timerStart="timerStart" />
         </div>
         <div class="chessbtns">
-          <chessbtns @btnClick="resetStatus" />
+          <chessbtns @btnClick="resetStatus" ref="chessBtn"/>
         </div>
       </div>
       <div class="game-mid">
@@ -52,7 +52,7 @@
   import msgslist from '../msgslist/msgslist';
   import barrage from '../barrage/barrage';
   import rank from '../../components/rank/rank';
-
+  import axios from 'axios'
   export default {
     name: 'home',
     components: {
@@ -124,6 +124,9 @@
       this.$root.Bus.$on('againstTimerStart', function (arg) {
         that.againstTimerStart = !that.againstTimerStart;
       });
+      this.$root.$on('resetHasRegret', function (){
+        that.$refs.chessBtn.hasRegret = false
+      })
     },
     sockets: {
       connect () {
@@ -170,11 +173,31 @@
         switch (data.status) { // 0对方掉线 1对方认输 2对方申请悔棋
           case 0:
             alert('对方掉线，你赢了');
+            axios.post("http://120.78.156.5:8080/winUpdate", {username: this.username})
+            .then((msg) => {
+              console.log(msg);
+              if(msg.status){
+                console.log("胜局记录添加成功")
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            })
             this.initChessNum();
             this.resetStatus();
             break;
           case 1:
             alert('对方认输，你赢了');
+            axios.post("http://120.78.156.5:8080/winUpdate", {username: this.username})
+            .then((msg) => {
+              console.log(msg);
+              if(msg.status){
+                console.log("胜局记录添加成功")
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            })
             this.initChessNum();
             this.resetStatus();
             break;
@@ -187,20 +210,32 @@
         this.$socket.emit('repentRespose', {isAgree: res});
         if (res) {
           console.log(this.coordinate);
-          this.$set(this.$refs.chessboard.map[this.coordinate[0]], this.coordinate[1], 0);
-          this.$set(this.$refs.chessboard.map[this.myCoordinate[0]], this.myCoordinate[1], 0);
-          this.$root.Bus.$emit('chessNum', this.chessNum - 1);
-          this.$root.Bus.$emit('againstChessNum', this.againstChessNum - 1);
+          if(this.myTurn) {
+            this.$set(this.$refs.chessboard.map[this.coordinate[0]], this.coordinate[1], 0);
+            this.$root.Bus.$emit('againstChessNum', this.againstChessNum - 1);
+            this.myTurn = false
+          } else {
+            this.$set(this.$refs.chessboard.map[this.coordinate[0]], this.coordinate[1], 0);
+            this.$set(this.$refs.chessboard.map[this.myCoordinate[0]], this.myCoordinate[1], 0);
+            this.$root.Bus.$emit('chessNum', this.chessNum - 1);
+            this.$root.Bus.$emit('againstChessNum', this.againstChessNum - 1);
+          }
         }
       },
       reciveRepentResult (data) {
         if (data.isAgree) {
           alert('对方同意了你的悔棋请求');
           console.log(this.myCoordinate);
-          this.$set(this.$refs.chessboard.map[this.myCoordinate[0]], this.myCoordinate[1], 0);
-          this.$set(this.$refs.chessboard.map[this.coordinate[0]], this.coordinate[1], 0);
-          this.$root.Bus.$emit('chessNum', this.chessNum - 1);
-          this.$root.Bus.$emit('againstChessNum', this.againstChessNum - 1);
+          if(this.myTurn){
+             this.$set(this.$refs.chessboard.map[this.myCoordinate[0]], this.myCoordinate[1], 0);
+             this.$set(this.$refs.chessboard.map[this.coordinate[0]], this.coordinate[1], 0);
+             this.$root.Bus.$emit('chessNum', this.chessNum - 1);
+             this.$root.Bus.$emit('againstChessNum', this.againstChessNum - 1);
+          }else {
+             this.$set(this.$refs.chessboard.map[this.myCoordinate[0]], this.myCoordinate[1], 0);
+             this.$root.Bus.$emit('chessNum', this.chessNum - 1);
+             this.myTurn = true
+          }
         } else {
           alert('对方无情地拒绝了你的悔棋请求');
         }
@@ -209,6 +244,7 @@
     methods: {
       resetStatus () {
         this.$refs.chessboard.showStart = true;
+        this.$refs.chessBtn.hasRegret = false;
         this.againstId = '';
         this.againstName = '';
         this.myTurn = false;
