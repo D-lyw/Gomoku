@@ -161,15 +161,18 @@
           var that = this;
           if (this.myTurn) {
             that.$root.Bus.$emit('timerStart');
+            this.$refs.chessboard.showLoading = false;
             alert('你是先手');
           } else {
             that.$root.Bus.$emit('againstTimerStart');
+            this.$refs.chessboard.showLoading = false;
             alert('你是后手');
           }
         } else {
           // 匹配失败
           // 显示信息
           alert('匹配失败, 请重新开始匹配');
+          this.$refs.chessboard.showLoading = false;
           this.$refs.chessboard.showStart = true;
         }
       },
