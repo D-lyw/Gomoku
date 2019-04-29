@@ -62,6 +62,17 @@
             var ifWin = isWin(this.map, row, col);
             if (ifWin) {
               this.updateWinTime();
+
+              axios.post("http://120.78.156.5:8080/winUpdate", {username: this.username})
+              .then((msg) => {
+                if(msg.status){
+                  console.log("胜局记录添加成功")
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+              })
+
               setTimeout(() => {
                 alert('你赢了');
                 this.showStart = !this.showStart;
